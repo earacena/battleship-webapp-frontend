@@ -1,1 +1,1 @@
-# battleship-game-webapp
+# battleship-webapp-frontend
