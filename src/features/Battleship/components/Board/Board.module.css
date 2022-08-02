@@ -1,0 +1,4 @@
+.Board {
+  display: inline-grid;
+  grid-template-columns: repeat(var(--size), max-content);
+}
