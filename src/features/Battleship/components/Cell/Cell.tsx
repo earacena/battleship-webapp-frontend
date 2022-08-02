@@ -1,5 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import React from 'react';
+import classNames from 'classnames';
+import styles from './Cell.module.css';
 
 export type CellProps = {
   id: string;
@@ -14,6 +16,9 @@ function Cell({ id, x, y, children }: CellProps) {
   return (
     <div
       ref={setNodeRef}
+      className={classNames(
+        styles.Cell
+      )}
     >
       {children}
     </div>

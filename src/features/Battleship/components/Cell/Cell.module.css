@@ -1,0 +1,8 @@
+.Cell {
+  --size: calc(4vw);
+  --min-size: 30px;
+  --max_size: calc(8vh);
+
+  border: 1;
+  border-color: darkslategrey;
+}
