@@ -3,6 +3,14 @@
   --min-size: 30px;
   --max_size: calc(8vh);
 
-  border: 1;
-  border-color: darkslategrey;
+  border: 0.2em solid;
+  min-width: var(--min-size);
+  max-width: var(--max_size);
+  min-height: var(--min-size);
+  max-height: var(--max-size);
+
+  width: var(--size);
+  height: var(--size);
+
+  padding: 8px;
 }
