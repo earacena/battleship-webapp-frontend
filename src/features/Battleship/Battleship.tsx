@@ -24,11 +24,13 @@ const generateBoard = (size: number): CellProps[][] => {
 }
 
 function Battleship() {
-  const [board] = useState(() => generateBoard(10));
+
+  const boardSize: number = 10;
+  const [board] = useState(() => generateBoard(boardSize));
 
   return (
     <div>
-      <Board>
+      <Board size={boardSize}>
         {board.map((row, y) => 
           row.map((cell, x) =>
             <Cell
