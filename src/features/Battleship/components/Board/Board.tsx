@@ -3,14 +3,15 @@ import styles from './Board.module.css';
 
 type BoardProps = {
   size: number;
-  children: React.ReactNode;
+  gridSize: number;
+  children?: React.ReactNode;
 };
 
-function Board({ size, children }: BoardProps) {
+function Board({ size, gridSize, children }: BoardProps) {
   return (
     <div
       className={styles.Board}
-      style={{'--size': size} as React.CSSProperties}
+      style={{'--board-size': size, '--grid-size': `${gridSize}px`} as React.CSSProperties}
     >
       {children}
     </div>

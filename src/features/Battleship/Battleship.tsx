@@ -1,6 +1,6 @@
 import { DndContext } from '@dnd-kit/core';
 import React, { useState } from 'react';
-import { Board, Cell, CellProps, Piece, PieceProps } from './components';
+import { Board, CellProps, PieceProps } from './components';
 
 const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
@@ -56,39 +56,21 @@ const generatePieces = (boardSize: number): (PieceProps | undefined)[][] => {
   return pieces;
 };
 
-function Battleship() {
 
+function Battleship() {
+  
   const boardSize: number = 10;
+  const gridSize: number = 50;
+
   const [board] = useState(() => generateBoard(boardSize));
   const [pieces, setPieces] = useState(() => generatePieces(boardSize));
+  const [isDragging, setIsDragging] = useState(false);
+  const [movingPiece, setMovingPiece] = useState<PieceProps | undefined>(undefined);
+ 
 
   return (
     <DndContext>
-      <div>
-        <Board size={boardSize}>
-          {board.map((row, y) => 
-            row.map((cell, x) => {
-              const piece = pieces ? pieces[y][x] : undefined;
-              if (piece !== undefined) {
-                return (
-                  <Cell
-                    key={cell.id}
-                    {...cell}
-                  >
-                    <Piece key={piece.id} {...piece} />
-                  </Cell>
-                );
-              }
-
-              return (
-                <Cell
-                  key={cell.id}
-                  {...cell}
-                />);
-            })
-          )}
-        </Board>
-      </div>
+      <Board size={boardSize} gridSize={gridSize} />
     </DndContext>
   );
 }
