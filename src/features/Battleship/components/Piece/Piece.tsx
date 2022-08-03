@@ -1,9 +1,7 @@
-import React from 'react';
-import { useDraggable } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
+import React, { forwardRef } from 'react';
 import { RiShip2Fill } from 'react-icons/ri';
 
-export type PieceProps = {
+export interface PieceProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;
   x: number;
   y: number;
@@ -12,25 +10,10 @@ export type PieceProps = {
   rotated: boolean;
 };
 
-function Piece({ id, type, rotated, x, y }: PieceProps) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: id
-  });
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-  }
-
-  return (
-    <button
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-    >
-      <RiShip2Fill />
-    </button>
-  )
-}
+const Piece = forwardRef<HTMLDivElement, PieceProps>(({children, ...props}, ref) => {
+    return (
+      <div ref={ref} {...props}> {children} </div>
+    );
+});
 
 export default Piece;
