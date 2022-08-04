@@ -4,7 +4,11 @@ import { CSS } from '@dnd-kit/utilities';
 import Piece, { PieceProps } from './Piece';
 import { RiShip2Fill } from 'react-icons/ri';
 
-function DraggablePiece(props: PieceProps) {
+export interface DraggablePieceProps extends PieceProps {
+  vertical: boolean;
+};
+
+function DraggablePiece(props: DraggablePieceProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.id
   });
