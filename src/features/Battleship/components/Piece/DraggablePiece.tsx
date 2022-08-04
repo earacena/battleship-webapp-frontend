@@ -17,11 +17,13 @@ function DraggablePiece(props: DraggablePieceProps) {
     transform: CSS.Translate.toString(transform),
   }
 
+  const {vertical, ...pieceProps } = props;
+
   return (
     <Piece
       ref={setNodeRef}
       style={style}
-      {...props}
+      {...pieceProps}
       {...listeners}
       {...attributes}
     >
