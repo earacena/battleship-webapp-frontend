@@ -1,7 +1,7 @@
 .Board {
   width: calc(var(--grid-size) * var(--board-size) + 1px);
   height: calc(var(--grid-size) * var(--board-size) + 1px);
-  
+  z-index: -1;
   background-image: 
     repeating-linear-gradient(
       0deg,
