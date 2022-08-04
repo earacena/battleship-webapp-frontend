@@ -7,7 +7,6 @@ export interface PieceProps extends React.HTMLAttributes<HTMLDivElement> {
   y: number;
   type: string;
   size: number;
-  rotated: boolean;
 };
 
 const Piece = forwardRef<HTMLDivElement, PieceProps>(({children, ...props}, ref) => {
