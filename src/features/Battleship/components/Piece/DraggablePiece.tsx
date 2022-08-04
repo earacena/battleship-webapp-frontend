@@ -6,6 +6,8 @@ import { RiShip2Fill } from 'react-icons/ri';
 
 export interface DraggablePieceProps extends PieceProps {
   gridSize: number;
+  top: number;
+  left: number;
   vertical: boolean;
 };
 
