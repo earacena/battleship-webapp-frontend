@@ -1,6 +1,8 @@
-import { DndContext } from '@dnd-kit/core';
-import React, { useState } from 'react';
-import { Board, CellProps, PieceProps } from './components';
+import React, { useState, useMemo } from 'react';
+import { defaultCoordinates, DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { createSnapModifier } from '@dnd-kit/modifiers';
+import { Board, CellProps, DraggablePiece, DraggablePieceProps } from './components';
+import { Coordinates, DragEndEvent, DragStartEvent } from '@dnd-kit/core/dist/types';
 
 const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
@@ -8,7 +10,6 @@ const generateBoard = (boardSize: number): CellProps[][] => {
     Array(boardSize),
     () => new Array(boardSize),
   );
-
 
   // Populate array
   for (let y = 0; y < boardSize; ++y) {
@@ -24,8 +25,8 @@ const generateBoard = (boardSize: number): CellProps[][] => {
   return board;
 }
 
-const generatePieces = (boardSize: number): (PieceProps | undefined)[][] => {
-  const pieces: (PieceProps | undefined)[][] = Array.from(
+const generatePieces = (boardSize: number, gridSize: number): (DraggablePieceProps | undefined)[][] => {
+  const pieces: (DraggablePieceProps | undefined)[][] = Array.from(
     Array(boardSize),
     () => new Array(boardSize),
   );
@@ -33,7 +34,7 @@ const generatePieces = (boardSize: number): (PieceProps | undefined)[][] => {
   for (let y = 0; y < boardSize; ++y) {
     for (let x = 0; x < boardSize; ++x) {
       if (y === 0 && x >= 0 && x < 5) {
-        pieces[y][x] = { id: `p-${y}-${x}`, size: 0, type: '', x, y, rotated: true };
+        pieces[y][x] = { id: `p-${y}-${x}`, size: 0, type: '', top: y * gridSize, left: x * gridSize, x, y, vertical: true, gridSize};
       }
     }
   }
@@ -56,20 +57,89 @@ const generatePieces = (boardSize: number): (PieceProps | undefined)[][] => {
   return pieces;
 };
 
-
 function Battleship() {
   
   const boardSize: number = 10;
   const gridSize: number = 50;
 
   const [board] = useState(() => generateBoard(boardSize));
-  const [pieces, setPieces] = useState(() => generatePieces(boardSize));
-  const [isDragging, setIsDragging] = useState(false);
-  const [movingPiece, setMovingPiece] = useState<PieceProps | undefined>(undefined);
- 
+  const [pieces, setPieces] = useState(() => generatePieces(boardSize, gridSize));
+
+  const [movingPiece, setMovingPiece] = useState<DraggablePieceProps | undefined>(undefined);
+
+  const [coordinates, setCoordinates] = useState<Coordinates>(defaultCoordinates);
+  const mouseSensor = useSensor(MouseSensor, {});
+  const touchSensor = useSensor(TouchSensor, {});
+  const keyboardSensor = useSensor(KeyboardSensor, {});
+  const sensors = useSensors(
+    mouseSensor,
+    touchSensor,
+    keyboardSensor,
+  );
+
+  const snapToGrid = useMemo(() => createSnapModifier(gridSize), [gridSize]);
+
+  const handleOnDragStart = ({ active }: DragStartEvent) => {
+    for (let y = 0; y < boardSize; ++y) {
+      for (let x = 0; x < boardSize; ++x) {
+        const piece = pieces ? pieces[y][x] : undefined;
+        if (piece !== undefined && piece.id === active.id) {
+          setMovingPiece(pieces[y][x]);
+          setCoordinates({ x, y });
+        }
+      }
+    }
+  }
+
+  const handleOnDragEnd = ({ delta }: DragEndEvent): void => {
+    setCoordinates(({ x, y }) => {
+      return {
+        x: coordinates.x + delta.x,
+        y: coordinates.y + delta.y,
+      }
+    });
+    setPieces((prevPieces) => {
+      if (movingPiece !== undefined) {
+        const pieces = prevPieces ? prevPieces : undefined;
+        if (pieces !== undefined) {
+          const piece = pieces[movingPiece.y][movingPiece.x] ? pieces[movingPiece.y][movingPiece.x] : undefined;
+          if (piece !== undefined) {
+            pieces[coordinates.y][coordinates.x] = {
+              ...piece,
+              x: coordinates.x,
+              y: coordinates.y,
+            };
+
+            pieces[movingPiece.y][movingPiece.x] = undefined;
+            return pieces;
+          }
+        }
+      }
+      return prevPieces;
+    });
+
+    setMovingPiece(undefined);
+    setCoordinates(defaultCoordinates);
+  };
 
   return (
-    <DndContext>
+    <DndContext 
+      modifiers={[snapToGrid]}
+      sensors={sensors}
+      onDragStart={handleOnDragStart}
+      onDragEnd={handleOnDragEnd}
+    >
+      {board.map((row, y) => 
+        row.map((cell, x) => {
+          if (pieces[y][x]) {
+            const piece = pieces ? pieces[y][x] : undefined;
+            if (piece !== undefined) {
+              return <DraggablePiece key={piece.id} {...piece} />;
+            }
+            return undefined;
+          }
+          return undefined;
+        }))}
       <Board size={boardSize} gridSize={gridSize} />
     </DndContext>
   );

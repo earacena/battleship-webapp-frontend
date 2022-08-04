@@ -5,6 +5,7 @@ import Piece, { PieceProps } from './Piece';
 import { RiShip2Fill } from 'react-icons/ri';
 
 export interface DraggablePieceProps extends PieceProps {
+  gridSize: number;
   vertical: boolean;
 };
 
@@ -13,11 +14,17 @@ function DraggablePiece(props: DraggablePieceProps) {
     id: props.id
   });
 
-  const style = {
+  let top = props.y * props.gridSize;
+  let left = props.x * props.gridSize;
+  
+  const style: React.CSSProperties = {
+    position: 'fixed',
     transform: CSS.Translate.toString(transform),
+    top,
+    left,
   }
 
-  const {vertical, ...pieceProps } = props;
+  const {vertical, gridSize,...pieceProps } = props;
 
   return (
     <Piece
