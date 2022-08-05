@@ -3,7 +3,7 @@
   --min-size: 30px;
   --max_size: calc(8vh);
 
-  border: 0.2em solid;
+  border: 0.1em solid;
   min-width: var(--min-size);
   max-width: var(--max_size);
   min-height: var(--min-size);
