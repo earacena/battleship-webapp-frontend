@@ -3,16 +3,19 @@ import { RiShip2Fill } from 'react-icons/ri';
 
 export interface PieceProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;
-  x: number;
-  y: number;
+  position: { x: number, y: number },
   type: string;
   size: number;
+  gridSize: number;
+  vertical: boolean;
+  children?: React.ReactNode
 };
 
 const Piece = forwardRef<HTMLDivElement, PieceProps>(({children, ...props}, ref) => {
-    return (
-      <div ref={ref} {...props}> {children} </div>
-    );
+  const {vertical, gridSize,...pieceProps } = props;
+  return (
+    <div ref={ref} {...pieceProps}> {children} </div>
+  );
 });
 
 export default Piece;
