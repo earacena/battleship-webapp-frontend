@@ -16,6 +16,16 @@ import {
 } from "./components";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 
+type Position = {
+  y: number,
+  x: number,
+};
+
+type MovingPieceProps = {
+  movingPieceSize: number,
+  movingPieceVertical: boolean,
+};
+
 const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
   const board: CellProps[][] = Array.from(
@@ -131,6 +141,34 @@ const generateOccupiedPositions = (boardSize: number): boolean[][] => {
   return occupiedPositions;
 };
 
+const canMove = ({ movingPieceSize, movingPieceVertical }: MovingPieceProps, newPosition: Position, occupiedPositions: boolean[][]) => {
+  if (movingPieceVertical) {
+    // check occupied positions vertically
+    if (movingPieceSize + newPosition.y > occupiedPositions.length) {
+      return false;
+    }
+
+    for (let i = newPosition.y; i < movingPieceSize + newPosition.y; ++i) {
+      if (occupiedPositions[i][newPosition.x]) {
+        return false;
+      }
+    }
+  } else {
+    // check occupied positions horizontally
+    if (movingPieceSize + newPosition.x > occupiedPositions.length) {
+      return false;
+    }
+
+    for (let i = newPosition.x; i < movingPieceSize + newPosition.x; ++i) {
+      if (occupiedPositions[newPosition.y][i]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
 function Battleship() {
   const boardSize: number = 10;
   const gridSize: number = 50;
@@ -160,17 +198,18 @@ function Battleship() {
 
   const handleOnDragEnd = (event: DragEndEvent): void => {
     if (!movingPiece?.position || !event.over?.id) {
-      console.log(movingPiece, event);
       return;
     }
-    console.log("update");
+
     const { x: movingPieceX, y: movingPieceY } = movingPiece.position;
+    const { vertical: movingPieceVertical, size: movingPieceSize } = movingPiece;
     const [cellY, cellX] = event.over.id.toString().split("-").map(Number);
-    console.log(`[${cellY}, ${cellX}]`);
     const possiblyExistingPiece = pieces[cellY][cellX];
     setMovingPiece(null);
 
-    if (event.over && !possiblyExistingPiece) {
+    if (event.over && !possiblyExistingPiece && canMove({ movingPieceSize, movingPieceVertical}, { y: cellY, x: cellX }, occupiedPositions)) {
+      console.log('can move');
+      // Move piece
       const newPiece: PieceProps = {
         ...movingPiece,
         position: { x: cellX, y: cellY },
@@ -182,6 +221,32 @@ function Battleship() {
       newPieces[cellY][cellX] = newPiece;
 
       setPieces(newPieces);
+
+      // Unoccupy old positions
+      setOccupiedPositions((prevOccupiedPositions) => {
+        if (movingPieceVertical) {
+          for (let i = movingPieceY; i < movingPieceY + movingPiece.size; ++i) {
+            prevOccupiedPositions[i][movingPieceX] = false;
+          }
+        } else {
+          for (let i = movingPieceX; i < movingPieceX + movingPiece.size; ++i) {
+            prevOccupiedPositions[movingPieceY][i] = false;
+          }
+        }
+  
+        // Occupy new positions
+        if (movingPieceVertical) {
+          for (let i = cellY; i < cellY + movingPieceSize; ++i) {
+            prevOccupiedPositions[i][cellX] = true;
+          }
+        } else {
+          for (let i = cellX; i < cellX + movingPieceSize; ++i) {
+            prevOccupiedPositions[cellY][i] = true;
+          }
+        }
+
+        return prevOccupiedPositions;
+      });
     }
   };
 
