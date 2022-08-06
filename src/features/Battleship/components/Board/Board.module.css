@@ -1,9 +1,6 @@
 .Board {
   display: inline-grid;
   grid-template-columns: repeat(var(--board-size), max-content);
-
-  width: calc(var(--grid-size) * var(--board-size) + 1px);
-  height: calc(var(--grid-size) * var(--board-size) + 1px);
   z-index: -1;
-
+  margin: 10px;
 };
