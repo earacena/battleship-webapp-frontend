@@ -8,10 +8,11 @@ export type CellProps = {
   x: number,
   y: number,
   occupied: boolean;
+  selected: boolean;
   children?: React.ReactElement | undefined;
 };
 
-function Cell({ id, x, y, occupied, children }: CellProps) {
+function Cell({ id, x, y, occupied, selected, children }: CellProps) {
   const { setNodeRef } = useDroppable({ id });
 
   return (
@@ -20,7 +21,10 @@ function Cell({ id, x, y, occupied, children }: CellProps) {
       className={classNames(
         styles.Cell
       )}
-      style={{'--occupied': occupied ? 'lightgreen' : 'white'} as React.CSSProperties}
+      style={{
+        '--occupied': occupied ? '#005AB5' : 'white',
+        '--selected': selected ? '#DC3220' : occupied ? '#005AB5' : 'white',
+      } as React.CSSProperties}
     >
       {children}
     </div>
