@@ -22,6 +22,8 @@ type Position = {
 };
 
 type MovingPieceProps = {
+  movingPieceX: number,
+  movingPieceY: number,
   movingPieceSize: number,
   movingPieceVertical: boolean,
 };
@@ -141,7 +143,7 @@ const generateOccupiedPositions = (boardSize: number): boolean[][] => {
   return occupiedPositions;
 };
 
-const canMove = ({ movingPieceSize, movingPieceVertical }: MovingPieceProps, newPosition: Position, occupiedPositions: boolean[][]) => {
+const canMove = ({ movingPieceX, movingPieceY, movingPieceSize, movingPieceVertical }: MovingPieceProps, newPosition: Position, occupiedPositions: boolean[][]) => {
   if (movingPieceVertical) {
     // check occupied positions vertically
     if (movingPieceSize + newPosition.y > occupiedPositions.length) {
@@ -149,7 +151,9 @@ const canMove = ({ movingPieceSize, movingPieceVertical }: MovingPieceProps, new
     }
 
     for (let i = newPosition.y; i < movingPieceSize + newPosition.y; ++i) {
-      if (occupiedPositions[i][newPosition.x]) {
+      console.log(`${movingPieceY} <= ${i} <= ${movingPieceY + movingPieceSize}`);
+      console.log(`${newPosition.x} === ${movingPieceX}`)
+      if (occupiedPositions[i][newPosition.x] && !(((movingPieceY <= i) && (i <= movingPieceY + movingPieceSize)) && newPosition.x === movingPieceX)) {
         return false;
       }
     }
@@ -160,7 +164,7 @@ const canMove = ({ movingPieceSize, movingPieceVertical }: MovingPieceProps, new
     }
 
     for (let i = newPosition.x; i < movingPieceSize + newPosition.x; ++i) {
-      if (occupiedPositions[newPosition.y][i]) {
+      if (occupiedPositions[newPosition.y][i] && !(((movingPieceX <= i) && (i <= movingPieceX + movingPieceSize)) && newPosition.y === movingPieceY)) {
         return false;
       }
     }
@@ -207,7 +211,7 @@ function Battleship() {
     const possiblyExistingPiece = pieces[cellY][cellX];
     setMovingPiece(null);
 
-    if (event.over && !possiblyExistingPiece && canMove({ movingPieceSize, movingPieceVertical}, { y: cellY, x: cellX }, occupiedPositions)) {
+    if (event.over && !possiblyExistingPiece && canMove({ movingPieceX, movingPieceY, movingPieceSize, movingPieceVertical}, { y: cellY, x: cellX }, occupiedPositions)) {
       console.log('can move');
       // Move piece
       const newPiece: PieceProps = {
