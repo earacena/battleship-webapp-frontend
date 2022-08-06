@@ -43,6 +43,7 @@ const generateBoard = (boardSize: number): CellProps[][] => {
         x,
         y,
         occupied: false,
+        selected: false,
       };
     }
   }
@@ -194,6 +195,32 @@ const canMove = (
   return true;
 };
 
+const canRotate = (piece: PieceProps, occupiedPositions: boolean[][]): boolean => {
+  if (piece.vertical) {
+    if (piece.position.x + piece.size > occupiedPositions.length) {
+      return false;
+    }
+
+    // check if horizonal position unoccupied
+    for (let i = piece.position.x + 1; i < piece.position.x + piece.size; ++i) {
+      if (occupiedPositions[piece.position.y][i]) {
+        return false;
+      }
+    }
+  } else {
+    if (piece.position.y + piece.size > occupiedPositions.length) {
+      return false;
+    }
+    // check if vetical position unoccupied
+    for (let i = piece.position.y + 1; i < piece.position.y + piece.size; ++i) {
+      if (occupiedPositions[i][piece.position.x]) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
 function Battleship() {
   const boardSize: number = 10;
   const gridSize: number = 50;
@@ -206,10 +233,56 @@ function Battleship() {
     generatePieces(boardSize, gridSize, setOccupiedPositions)
   );
   const [movingPiece, setMovingPiece] = useState<PieceProps | null>(null);
+
+  const [selected, setSelected] = useState<PieceProps | null>(null);
+
   const mouseSensor = useSensor(MouseSensor, {});
   const touchSensor = useSensor(TouchSensor, {});
   const keyboardSensor = useSensor(KeyboardSensor, {});
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
+
+  const handleRotate = () => {
+    if (selected && canRotate(selected, occupiedPositions)) {
+      setOccupiedPositions((prevOccupiedPositions) => {
+        // Unoccupy old positions 
+        if (selected.vertical) {
+          for (let i = selected.position.y; i < selected.position.y + selected.size; ++i) {
+            prevOccupiedPositions[i][selected.position.x] = false;
+          }
+        } else {
+          for (let i = selected.position.x; i < selected.position.x + selected.size; ++i) {
+            prevOccupiedPositions[selected.position.y][i] = false;
+          }
+        }
+
+        // Occupy new positions new rotated
+        if (selected.vertical) {
+          for (let i = selected.position.x; i < selected.position.x + selected.size; ++i) {
+            prevOccupiedPositions[selected.position.y][i] = true;
+          }
+
+        } else {
+          for (let i = selected.position.y; i < selected.position.y + selected.size; ++i) {
+            prevOccupiedPositions[i][selected.position.x] = true;
+          }
+        }
+        return prevOccupiedPositions;
+      });
+
+      // Update rotated piece
+      const newPiece: PieceProps = {
+        ...selected,
+        vertical: !selected.vertical
+      };
+      const newPieces = pieces.map((row) => row.slice());
+
+      delete newPieces[selected.position.y][selected.position.x];
+      newPieces[selected.position.y][selected.position.x] = newPiece;
+
+      setPieces(newPieces);
+      setSelected(newPiece);
+    }
+  };
 
   const handleOnDragStart = ({ active }: DragStartEvent) => {
     const piece = pieces.reduce<PieceProps | undefined>((acc, row) => {
@@ -231,6 +304,7 @@ function Battleship() {
       movingPiece;
     const [cellY, cellX] = event.over.id.toString().split("-").map(Number);
     const possiblyExistingPiece = pieces[cellY][cellX];
+    setSelected(movingPiece);
     setMovingPiece(null);
 
     if (
@@ -255,9 +329,10 @@ function Battleship() {
       newPieces[cellY][cellX] = newPiece;
 
       setPieces(newPieces);
+      setSelected(newPiece);
 
-      // Unoccupy old positions
       setOccupiedPositions((prevOccupiedPositions) => {
+        // Unoccupy old positions
         if (movingPieceVertical) {
           for (let i = movingPieceY; i < movingPieceY + movingPiece.size; ++i) {
             prevOccupiedPositions[i][movingPieceX] = false;
@@ -289,31 +364,34 @@ function Battleship() {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleOnDragStart}
-      onDragCancel={handleOnDragCancel}
-      onDragEnd={handleOnDragEnd}
-    >
-      <Board size={boardSize} gridSize={gridSize}>
-        {board.map((row, y) =>
-          row.map((cell, x) => {
-            const occupied = occupiedPositions[y][x];
-            if (pieces[y][x]) {
-              const piece = pieces ? pieces[y][x] : null;
-              if (piece) {
-                return (
-                  <Cell key={cell.id} {...cell} occupied={true}>
-                    <DraggablePiece key={piece.id} {...piece} />
-                  </Cell>
-                );
+    <div>
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleOnDragStart}
+        onDragCancel={handleOnDragCancel}
+        onDragEnd={handleOnDragEnd}
+      >
+        <Board size={boardSize} gridSize={gridSize}>
+          {board.map((row, y) =>
+            row.map((cell, x) => {
+              const occupied = occupiedPositions[y][x];
+              if (pieces[y][x]) {
+                const piece = pieces ? pieces[y][x] : null;
+                if (piece) {
+                  return (
+                    <Cell key={cell.id} {...cell} occupied={true} selected={piece.id === selected?.id}>
+                      <DraggablePiece key={piece.id} {...piece} />
+                    </Cell>
+                  );
+                }
               }
-            }
-            return <Cell key={cell.id} {...cell} occupied={occupied} />;
-          })
-        )}
-      </Board>
-    </DndContext>
+              return <Cell key={cell.id} {...cell} occupied={occupied} />;
+            })
+          )}
+        </Board>
+      </DndContext>
+      <button onClick={handleRotate}>Rotate {`selected: ${selected?.type}`}</button>
+    </div>
   );
 }
 
