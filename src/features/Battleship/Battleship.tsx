@@ -17,15 +17,15 @@ import {
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core/dist/types";
 
 type Position = {
-  y: number,
-  x: number,
+  y: number;
+  x: number;
 };
 
 type MovingPieceProps = {
-  movingPieceX: number,
-  movingPieceY: number,
-  movingPieceSize: number,
-  movingPieceVertical: boolean,
+  movingPieceX: number;
+  movingPieceY: number;
+  movingPieceSize: number;
+  movingPieceVertical: boolean;
 };
 
 const generateBoard = (boardSize: number): CellProps[][] => {
@@ -53,7 +53,7 @@ const generateBoard = (boardSize: number): CellProps[][] => {
 const generatePieces = (
   boardSize: number,
   gridSize: number,
-  setOccupiedPositions: (value: React.SetStateAction<boolean[][]>) => void,
+  setOccupiedPositions: (value: React.SetStateAction<boolean[][]>) => void
 ): (PieceProps | undefined)[][] => {
   const pieces: (PieceProps | undefined)[][] = Array.from(
     Array(boardSize),
@@ -86,7 +86,7 @@ const generatePieces = (
   }
   if (pieces[0][1]) {
     pieces[0][1] = { ...pieces[0][1], size: 4, type: "battleship" };
-    
+
     for (let i = 0; i < pieces[0][1].size; ++i) {
       setOccupiedPositions((prevPositions) => {
         prevPositions[i][1] = true;
@@ -96,7 +96,7 @@ const generatePieces = (
   }
   if (pieces[0][2]) {
     pieces[0][2] = { ...pieces[0][2], size: 3, type: "cruiser" };
-    
+
     for (let i = 0; i < pieces[0][2].size; ++i) {
       setOccupiedPositions((prevPositions) => {
         prevPositions[i][2] = true;
@@ -106,7 +106,7 @@ const generatePieces = (
   }
   if (pieces[0][3]) {
     pieces[0][3] = { ...pieces[0][3], size: 3, type: "submarine" };
-    
+
     for (let i = 0; i < pieces[0][3].size; ++i) {
       setOccupiedPositions((prevPositions) => {
         prevPositions[i][3] = true;
@@ -131,7 +131,7 @@ const generatePieces = (
 const generateOccupiedPositions = (boardSize: number): boolean[][] => {
   const occupiedPositions: boolean[][] = Array.from(
     Array(boardSize),
-    () => new Array(boardSize),
+    () => new Array(boardSize)
   );
 
   for (let y = 0; y < boardSize; ++y) {
@@ -143,7 +143,16 @@ const generateOccupiedPositions = (boardSize: number): boolean[][] => {
   return occupiedPositions;
 };
 
-const canMove = ({ movingPieceX, movingPieceY, movingPieceSize, movingPieceVertical }: MovingPieceProps, newPosition: Position, occupiedPositions: boolean[][]) => {
+const canMove = (
+  {
+    movingPieceX,
+    movingPieceY,
+    movingPieceSize,
+    movingPieceVertical,
+  }: MovingPieceProps,
+  newPosition: Position,
+  occupiedPositions: boolean[][]
+) => {
   if (movingPieceVertical) {
     // check occupied positions vertically
     if (movingPieceSize + newPosition.y > occupiedPositions.length) {
@@ -151,9 +160,14 @@ const canMove = ({ movingPieceX, movingPieceY, movingPieceSize, movingPieceVerti
     }
 
     for (let i = newPosition.y; i < movingPieceSize + newPosition.y; ++i) {
-      console.log(`${movingPieceY} <= ${i} <= ${movingPieceY + movingPieceSize}`);
-      console.log(`${newPosition.x} === ${movingPieceX}`)
-      if (occupiedPositions[i][newPosition.x] && !(((movingPieceY <= i) && (i <= movingPieceY + movingPieceSize)) && newPosition.x === movingPieceX)) {
+      if (
+        occupiedPositions[i][newPosition.x] &&
+        !(
+          movingPieceY <= i &&
+          i <= movingPieceY + movingPieceSize &&
+          newPosition.x === movingPieceX
+        )
+      ) {
         return false;
       }
     }
@@ -164,7 +178,14 @@ const canMove = ({ movingPieceX, movingPieceY, movingPieceSize, movingPieceVerti
     }
 
     for (let i = newPosition.x; i < movingPieceSize + newPosition.x; ++i) {
-      if (occupiedPositions[newPosition.y][i] && !(((movingPieceX <= i) && (i <= movingPieceX + movingPieceSize)) && newPosition.y === movingPieceY)) {
+      if (
+        occupiedPositions[newPosition.y][i] &&
+        !(
+          movingPieceX <= i &&
+          i <= movingPieceX + movingPieceSize &&
+          newPosition.y === movingPieceY
+        )
+      ) {
         return false;
       }
     }
@@ -178,7 +199,7 @@ function Battleship() {
   const gridSize: number = 50;
 
   const [board] = useState(() => generateBoard(boardSize));
-  const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() => 
+  const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
   const [pieces, setPieces] = useState(() =>
@@ -206,13 +227,22 @@ function Battleship() {
     }
 
     const { x: movingPieceX, y: movingPieceY } = movingPiece.position;
-    const { vertical: movingPieceVertical, size: movingPieceSize } = movingPiece;
+    const { vertical: movingPieceVertical, size: movingPieceSize } =
+      movingPiece;
     const [cellY, cellX] = event.over.id.toString().split("-").map(Number);
     const possiblyExistingPiece = pieces[cellY][cellX];
     setMovingPiece(null);
 
-    if (event.over && !possiblyExistingPiece && canMove({ movingPieceX, movingPieceY, movingPieceSize, movingPieceVertical}, { y: cellY, x: cellX }, occupiedPositions)) {
-      console.log('can move');
+    if (
+      event.over &&
+      !possiblyExistingPiece &&
+      canMove(
+        { movingPieceX, movingPieceY, movingPieceSize, movingPieceVertical },
+        { y: cellY, x: cellX },
+        occupiedPositions
+      )
+    ) {
+      console.log("can move");
       // Move piece
       const newPiece: PieceProps = {
         ...movingPiece,
@@ -237,7 +267,7 @@ function Battleship() {
             prevOccupiedPositions[movingPieceY][i] = false;
           }
         }
-  
+
         // Occupy new positions
         if (movingPieceVertical) {
           for (let i = cellY; i < cellY + movingPieceSize; ++i) {
@@ -272,7 +302,6 @@ function Battleship() {
             if (pieces[y][x]) {
               const piece = pieces ? pieces[y][x] : null;
               if (piece) {
-
                 return (
                   <Cell key={cell.id} {...cell} occupied={true}>
                     <DraggablePiece key={piece.id} {...piece} />
@@ -280,7 +309,7 @@ function Battleship() {
                 );
               }
             }
-            return <Cell key={cell.id} {...cell} occupied={occupied}/>;
+            return <Cell key={cell.id} {...cell} occupied={occupied} />;
           })
         )}
       </Board>
