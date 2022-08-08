@@ -46,6 +46,7 @@ function Battleship() {
 
   const [editing, setEditing] = useState<boolean>(true);
   const [board] = useState(() => generateBoard(boardSize));
+  const [opponentBoard] = useState(() => generateBoard(boardSize));
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
@@ -62,7 +63,8 @@ function Battleship() {
           setEditing={setEditing}
         />
       )}
-      {!editing && 
+      {!editing &&
+      <div>
         <Board size={boardSize} gridSize={gridSize}>
           { board.map((row, y) =>
             row.map((cell, x) => (
@@ -70,6 +72,15 @@ function Battleship() {
             ))
           )}
         </Board>
+        <Board size={boardSize} gridSize={gridSize}>
+          { opponentBoard.map((row, y) =>
+            row.map((cell, x) => (
+              <Cell key={cell.id} {...cell} />
+            ))
+          )}
+          
+        </Board>
+      </div>
       }
     </div>
   );
