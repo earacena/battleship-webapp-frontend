@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import {
-  CellProps,
-} from "./components";
+import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 
 const generateBoard = (boardSize: number): CellProps[][] => {
@@ -46,19 +44,34 @@ function Battleship() {
   const boardSize: number = 10;
   const gridSize: number = 50;
 
+  const [editing, setEditing] = useState<boolean>(true);
   const [board] = useState(() => generateBoard(boardSize));
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
 
   return (
-    <BoardEditor
-      board={board}
-      boardSize={boardSize}
-      gridSize={gridSize}
-      occupiedPositions={occupiedPositions}
-      setOccupiedPositions={setOccupiedPositions}
-    />
+    <div>
+      {editing && (
+        <BoardEditor
+          board={board}
+          boardSize={boardSize}
+          gridSize={gridSize}
+          occupiedPositions={occupiedPositions}
+          setOccupiedPositions={setOccupiedPositions}
+          setEditing={setEditing}
+        />
+      )}
+      {!editing && 
+        <Board size={boardSize} gridSize={gridSize}>
+          { board.map((row, y) =>
+            row.map((cell, x) => (
+              <Cell key={cell.id} {...cell} occupied={occupiedPositions[y][x]} />
+            ))
+          )}
+        </Board>
+      }
+    </div>
   );
 }
 

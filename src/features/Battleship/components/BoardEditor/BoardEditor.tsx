@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import { DraggablePiece, PieceProps } from '../Piece';
-import { Cell, CellProps } from '../Cell';
-import { DndContext, DragEndEvent, DragStartEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import Board from '../Board/Board';
+import React, { useState } from "react";
+import { DraggablePiece, PieceProps } from "../Piece";
+import { Cell, CellProps } from "../Cell";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import Board from "../Board/Board";
 
 type BoardEditorProps = {
-  board: CellProps[][],
-  boardSize: number,
-  gridSize: number,
-  occupiedPositions: boolean[][],
-  setOccupiedPositions: (value: React.SetStateAction<boolean[][]>) => void,
+  board: CellProps[][];
+  boardSize: number;
+  gridSize: number;
+  occupiedPositions: boolean[][];
+  setOccupiedPositions: (value: React.SetStateAction<boolean[][]>) => void;
+  setEditing: (value: React.SetStateAction<boolean>) => void;
 };
 
 type Position = {
@@ -153,7 +163,10 @@ const canMove = (
   return true;
 };
 
-const canRotate = (piece: PieceProps, occupiedPositions: boolean[][]): boolean => {
+const canRotate = (
+  piece: PieceProps,
+  occupiedPositions: boolean[][]
+): boolean => {
   if (piece.vertical) {
     if (piece.position.x + piece.size > occupiedPositions.length) {
       return false;
@@ -179,7 +192,14 @@ const canRotate = (piece: PieceProps, occupiedPositions: boolean[][]): boolean =
   return true;
 };
 
-function BoardEditor({ board, boardSize, gridSize, occupiedPositions, setOccupiedPositions }: BoardEditorProps) {
+function BoardEditor({
+  board,
+  boardSize,
+  gridSize,
+  occupiedPositions,
+  setOccupiedPositions,
+  setEditing,
+}: BoardEditorProps) {
   const [pieces, setPieces] = useState(() =>
     generatePieces(boardSize, gridSize, setOccupiedPositions)
   );
@@ -194,25 +214,40 @@ function BoardEditor({ board, boardSize, gridSize, occupiedPositions, setOccupie
   const handleRotate = () => {
     if (selected && canRotate(selected, occupiedPositions)) {
       setOccupiedPositions((prevOccupiedPositions) => {
-        // Unoccupy old positions 
+        // Unoccupy old positions
         if (selected.vertical) {
-          for (let i = selected.position.y; i < selected.position.y + selected.size; ++i) {
+          for (
+            let i = selected.position.y;
+            i < selected.position.y + selected.size;
+            ++i
+          ) {
             prevOccupiedPositions[i][selected.position.x] = false;
           }
         } else {
-          for (let i = selected.position.x; i < selected.position.x + selected.size; ++i) {
+          for (
+            let i = selected.position.x;
+            i < selected.position.x + selected.size;
+            ++i
+          ) {
             prevOccupiedPositions[selected.position.y][i] = false;
           }
         }
 
         // Occupy new positions new rotated
         if (selected.vertical) {
-          for (let i = selected.position.x; i < selected.position.x + selected.size; ++i) {
+          for (
+            let i = selected.position.x;
+            i < selected.position.x + selected.size;
+            ++i
+          ) {
             prevOccupiedPositions[selected.position.y][i] = true;
           }
-
         } else {
-          for (let i = selected.position.y; i < selected.position.y + selected.size; ++i) {
+          for (
+            let i = selected.position.y;
+            i < selected.position.y + selected.size;
+            ++i
+          ) {
             prevOccupiedPositions[i][selected.position.x] = true;
           }
         }
@@ -222,7 +257,7 @@ function BoardEditor({ board, boardSize, gridSize, occupiedPositions, setOccupie
       // Update rotated piece
       const newPiece: PieceProps = {
         ...selected,
-        vertical: !selected.vertical
+        vertical: !selected.vertical,
       };
       const newPieces = pieces.map((row) => row.slice());
 
@@ -324,13 +359,17 @@ function BoardEditor({ board, boardSize, gridSize, occupiedPositions, setOccupie
         <Board size={boardSize} gridSize={gridSize}>
           {board.map((row, y) =>
             row.map((cell, x) => {
-              
               const occupied = occupiedPositions[y][x];
               if (pieces[y][x]) {
                 const piece = pieces ? pieces[y][x] : null;
                 if (piece) {
                   return (
-                    <Cell key={cell.id} {...cell} occupied={true} selected={piece.id === selected?.id}>
+                    <Cell
+                      key={cell.id}
+                      {...cell}
+                      occupied={true}
+                      selected={piece.id === selected?.id}
+                    >
                       <DraggablePiece key={piece.id} {...piece} />
                     </Cell>
                   );
@@ -341,7 +380,10 @@ function BoardEditor({ board, boardSize, gridSize, occupiedPositions, setOccupie
           )}
         </Board>
       </DndContext>
-      <button onClick={handleRotate}>Rotate {`selected: ${selected?.type}`}</button>
+      <button onClick={handleRotate}>
+        Rotate {`selected: ${selected?.type}`}
+      </button>
+      <button onClick={() => setEditing(false)}>Ready!</button>
     </div>
   );
 }
