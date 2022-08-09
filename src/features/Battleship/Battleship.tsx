@@ -82,9 +82,6 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
             break;
           }
         }
-        if (failedCheck) {
-          continue;
-        }
       } else {
         for (let i = x; i < x + pieceSize; ++i) {
           if (occupiedPositions[y][i]) {
@@ -92,9 +89,9 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
             break;
           }
         }
-        if (failedCheck) {
-          continue;
-        }
+      }
+      if (failedCheck) {
+        continue;
       }
       
       
