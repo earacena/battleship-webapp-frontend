@@ -115,6 +115,8 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
   return occupiedPositions;
 }
 
+
+
 function Battleship() {
   const boardSize: number = 10;
   const gridSize: number = 50;
@@ -130,6 +132,42 @@ function Battleship() {
     generateRandomOccupiedPositions(boardSize)
   );
 
+  const [hitPositions, setHitPositions] = useState<boolean[][]>(() => generateOccupiedPositions(boardSize));
+  const [opponentHitPositions, setOpponentHitPositions] = useState<boolean[][]>(() => generateOccupiedPositions(boardSize));
+
+  const [playerScore, setPlayerScore] = useState<number>(0);
+  const [opponentScore, setOpponentScore] = useState<number>(0);
+  const [playerTurn, setPlayerTurn] = useState<boolean>(true);
+  const [gameEnded, setGameEnded] = useState<boolean>(false);
+
+  const canFire = (y: number, x: number, playerTurn: boolean) => {
+    if (playerTurn) {
+      if (opponentHitPositions[y][x] || !opponentOccupiedPositions[y][x]) {
+        return false;
+      }
+    } else {
+      // Check player's board for valid target
+      if (hitPositions[y][x] || !occupiedPositions[y][x]) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // const playTurn = (y: number, x: number) => {
+  //   if (playerTurn) {
+  //     // Allow player to fire
+  //     if (canFire(y, x, playerTurn)) {
+  //       
+  //     }
+  //   } else {
+  //     // Fire on given position on player's board
+  //     if (canFire(y, x, playerTurn)) {
+  //       
+  //     }
+  //   }
+  // };
   return (
     <div>
       {editing && (
@@ -142,7 +180,7 @@ function Battleship() {
           setEditing={setEditing}
         />
       )}
-      {!editing &&
+      {!editing && !gameEnded &&
       <div>
         <Board size={boardSize} gridSize={gridSize}>
           { board.map((row, y) =>
