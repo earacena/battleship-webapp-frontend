@@ -41,13 +41,15 @@ const generateOccupiedPositions = (boardSize: number): boolean[][] => {
 };
 
 const generateRandomValue = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min)) + Math.ceil(min));
-}
+  return Math.floor(
+    Math.random() * (Math.floor(max) - Math.ceil(min)) + Math.ceil(min)
+  );
+};
 
 const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
   // Generate random, vertical or horizontal positions, for all 5 pieces
   let occupiedPositions = generateOccupiedPositions(boardSize);
-  console.log(occupiedPositions)
+  console.log(occupiedPositions);
   const pieces = [5, 4, 3, 3, 2];
   let y: number;
   let x: number;
@@ -69,11 +71,11 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
       if (x + pieceSize > boardSize) {
         continue;
       }
-  
+
       if (y + pieceSize > boardSize) {
         continue;
       }
-  
+
       // Check if position is valid
       if (vertical) {
         for (let i = y; i < y + pieceSize; ++i) {
@@ -93,29 +95,25 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
       if (failedCheck) {
         continue;
       }
-      
-      
+
       // Position passed checks, add to occupied positions
       if (vertical) {
         for (let i = y; i < y + pieceSize; ++i) {
           occupiedPositions[i][x] = true;
-          
         }
       } else {
         for (let i = x; i < x + pieceSize; ++i) {
           occupiedPositions[y][i] = true;
         }
       }
-      
+
       valid = true;
       console.log(y, x);
     }
   }
-  
+
   return occupiedPositions;
-}
-
-
+};
 
 function Battleship() {
   const boardSize: number = 10;
@@ -132,22 +130,26 @@ function Battleship() {
     generateRandomOccupiedPositions(boardSize)
   );
 
-  const [hitPositions, setHitPositions] = useState<boolean[][]>(() => generateOccupiedPositions(boardSize));
-  const [opponentHitPositions, setOpponentHitPositions] = useState<boolean[][]>(() => generateOccupiedPositions(boardSize));
-
+  const [hitPositions, setHitPositions] = useState<boolean[][]>(() =>
+    generateOccupiedPositions(boardSize)
+  );
+  const [opponentHitPositions, setOpponentHitPositions] = useState<boolean[][]>(
+    () => generateOccupiedPositions(boardSize)
+  );
+  const [winner, setWinner] = useState<string>('');
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
   const [gameEnded, setGameEnded] = useState<boolean>(false);
 
-  const canFire = (y: number, x: number, playerTurn: boolean) => {
+  const canFire = (y: number, x: number) => {
     if (playerTurn) {
-      if (opponentHitPositions[y][x] || !opponentOccupiedPositions[y][x]) {
+      if (opponentHitPositions[y][x]) {
         return false;
       }
     } else {
       // Check player's board for valid target
-      if (hitPositions[y][x] || !occupiedPositions[y][x]) {
+      if (hitPositions[y][x]) {
         return false;
       }
     }
@@ -155,19 +157,49 @@ function Battleship() {
     return true;
   };
 
-  // const playTurn = (y: number, x: number) => {
-  //   if (playerTurn) {
-  //     // Allow player to fire
-  //     if (canFire(y, x, playerTurn)) {
-  //       
-  //     }
-  //   } else {
-  //     // Fire on given position on player's board
-  //     if (canFire(y, x, playerTurn)) {
-  //       
-  //     }
-  //   }
-  // };
+  const playTurn = (y: number, x: number, turn: boolean) => {
+    console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+
+    if (playerTurn === turn) {
+      if (playerTurn) {
+        // Allow player to fire
+        if (canFire(y, x)) {
+          if (opponentOccupiedPositions[y][x]) {
+            setPlayerScore((score) => score + 1);
+          }
+          setOpponentHitPositions((prevOpponentHitPositions) => {
+            prevOpponentHitPositions[y][x] = true;
+            return prevOpponentHitPositions;
+          });
+        }
+      } else {
+        // Fire on given position on player's board
+        if (canFire(y, x)) {
+          if (occupiedPositions[y][x]) {
+            setOpponentScore((score) => score + 1);
+          }
+          setHitPositions((prevHitPositions) => {
+            prevHitPositions[y][x] = true;
+            return prevHitPositions;
+          });
+        }
+      }
+
+      if (playerScore === 17) {
+        setWinner('player');
+        setGameEnded(true);
+      }
+      if (opponentScore === 17) {
+        setWinner('Opponent');
+        setGameEnded(true);
+      }
+      
+      setPlayerTurn(!playerTurn);
+    } else {
+      return;
+    }
+  };
+
   return (
     <div>
       {editing && (
@@ -180,24 +212,40 @@ function Battleship() {
           setEditing={setEditing}
         />
       )}
-      {!editing && !gameEnded &&
-      <div>
-        <Board size={boardSize} gridSize={gridSize}>
-          { board.map((row, y) =>
-            row.map((cell, x) => (
-              <Cell key={cell.id} {...cell} occupied={occupiedPositions[y][x]} />
-            ))
-          )}
-        </Board>
-        <Board size={boardSize} gridSize={gridSize}>
-          { opponentBoard.map((row, y) =>
-            row.map((cell, x) => (
-              <Cell key={cell.id} {...cell} occupied={opponentOccupiedPositions[y][x]} />
-            ))
-          )}
-        </Board>
-      </div>
-      }
+      {gameEnded && <div>{`Winner is ${winner}`}</div>}
+      {!editing && !gameEnded && (
+        <div>
+          Scores
+          {`Player: ${playerScore}`}
+          {`Opponent: ${opponentScore}`}
+          <Board size={boardSize} gridSize={gridSize}>
+            {board.map((row, y) =>
+              row.map((cell, x) => (
+                <Cell
+                  key={cell.id}
+                  {...cell}
+                  occupied={occupiedPositions[y][x]}
+                  hit={hitPositions[y][x]}
+                  playTurn={() => playTurn(y, x, false)}
+                />
+              ))
+            )}
+          </Board>
+          <Board size={boardSize} gridSize={gridSize}>
+            {opponentBoard.map((row, y) =>
+              row.map((cell, x) => (
+                <Cell
+                  key={cell.id}
+                  {...cell}
+                  occupied={opponentOccupiedPositions[y][x]}
+                  hit={opponentHitPositions[y][x]}
+                  playTurn={() => playTurn(y, x, true)}
+                />
+              ))
+            )}
+          </Board>
+        </div>
+      )}
     </div>
   );
 }
