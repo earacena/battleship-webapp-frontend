@@ -181,6 +181,8 @@ function Battleship() {
             prevOpponentHitPositions[y][x] = true;
             return prevOpponentHitPositions;
           });
+        } else {
+          return;
         }
       } else {
         // Fire on given position on player's board
@@ -192,6 +194,8 @@ function Battleship() {
             prevHitPositions[y][x] = true;
             return prevHitPositions;
           });
+        } else {
+          return;
         }
       }
       
