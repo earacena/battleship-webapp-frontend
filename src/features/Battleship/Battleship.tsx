@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 
@@ -152,7 +152,7 @@ function Battleship() {
     }
   }, [playerScore, opponentScore]);
 
-  const canFire = (y: number, x: number) => {
+  const canFire = useCallback((y: number, x: number) => {
     if (playerTurn) {
       if (opponentHitPositions[y][x]) {
         return false;
@@ -165,13 +165,35 @@ function Battleship() {
     }
 
     return true;
-  };
+  }, [hitPositions, opponentHitPositions, playerTurn]);
+
+  useEffect(() => {
+    if (!playerTurn) {
+      // Fire on given position on player's board
+      let y: number = generateRandomValue(0, boardSize);
+      let x: number = generateRandomValue(0, boardSize);
+      console.log(`randomly firing @ y: ${y} x: ${x}`);
+      while (!canFire(y, x)) {
+        y = generateRandomValue(0, boardSize);
+        x = generateRandomValue(0, boardSize);
+      }
+      if (occupiedPositions[y][x]) {
+        setOpponentScore((score) => score + 1);
+      }
+      setHitPositions((prevHitPositions) => {
+        prevHitPositions[y][x] = true;
+        return prevHitPositions;
+      });
+    
+      setPlayerTurn(!playerTurn);
+    }
+  }, [playerTurn, canFire, occupiedPositions]);
+
 
   const playTurn = (y: number, x: number, turn: boolean) => {
     console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
 
     if (playerTurn === turn) {
-      if (playerTurn) {
         // Allow player to fire
         if (canFire(y, x)) {
           if (opponentOccupiedPositions[y][x]) {
@@ -184,22 +206,8 @@ function Battleship() {
         } else {
           return;
         }
-      } else {
-        // Fire on given position on player's board
-        if (canFire(y, x)) {
-          if (occupiedPositions[y][x]) {
-            setOpponentScore((score) => score + 1);
-          }
-          setHitPositions((prevHitPositions) => {
-            prevHitPositions[y][x] = true;
-            return prevHitPositions;
-          });
-        } else {
-          return;
-        }
-      }
-      
-      setPlayerTurn(!playerTurn);
+        
+        setPlayerTurn(!playerTurn);
     } else {
       return;
     }
@@ -233,7 +241,6 @@ function Battleship() {
                   {...cell}
                   occupied={occupiedPositions[y][x]}
                   hit={hitPositions[y][x]}
-                  playTurn={() => playTurn(y, x, false)}
                 />
               ))
             )}
