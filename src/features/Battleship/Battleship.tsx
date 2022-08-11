@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 
@@ -122,14 +122,12 @@ function Battleship() {
   const [editing, setEditing] = useState<boolean>(true);
   const [board] = useState(() => generateBoard(boardSize));
   const [opponentBoard] = useState(() => generateBoard(boardSize));
-
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
   const [opponentOccupiedPositions] = useState<boolean[][]>(() =>
     generateRandomOccupiedPositions(boardSize)
   );
-
   const [hitPositions, setHitPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
@@ -141,6 +139,18 @@ function Battleship() {
   const [opponentScore, setOpponentScore] = useState<number>(0);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
   const [gameEnded, setGameEnded] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (playerScore === 17) {
+      setWinner('player');
+      setGameEnded(true);
+    }
+
+    if (opponentScore === 17) {
+      setWinner('opponent');
+      setGameEnded(true);
+    }
+  }, [playerScore, opponentScore]);
 
   const canFire = (y: number, x: number) => {
     if (playerTurn) {
@@ -184,21 +194,14 @@ function Battleship() {
           });
         }
       }
-
-      if (playerScore === 17) {
-        setWinner('player');
-        setGameEnded(true);
-      }
-      if (opponentScore === 17) {
-        setWinner('Opponent');
-        setGameEnded(true);
-      }
       
       setPlayerTurn(!playerTurn);
     } else {
       return;
     }
   };
+
+
 
   return (
     <div>
