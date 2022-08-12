@@ -252,6 +252,7 @@ function Battleship() {
                 <Cell
                   key={cell.id}
                   {...cell}
+                  hidden={true}
                   occupied={opponentOccupiedPositions[y][x]}
                   hit={opponentHitPositions[y][x]}
                   playTurn={() => playTurn(y, x, true)}

@@ -12,11 +12,35 @@ export type CellProps = {
   selected: boolean;
   hit?: boolean;
   children?: React.ReactElement | undefined;
+  hidden?: boolean;
   playTurn?: () => void;
 };
 
-function Cell({ id, x, y, hit, occupied, playTurn, selected, children }: CellProps) {
+function Cell({ id, x, y, hit, occupied, playTurn, hidden, selected, children }: CellProps) {
   const { setNodeRef } = useDroppable({ id });
+
+  let selectedColor: string;
+  let occupiedColor: string;
+  if (selected) {
+    selectedColor = '#DC3220';
+  } else {
+    if (occupied) {
+      selectedColor = '#005AB5';
+    } else {
+      selectedColor = 'white';
+    }
+  }
+
+  if (occupied) {
+    if (hidden) {
+      selectedColor = 'white';
+      occupiedColor = 'white';
+    } else {
+      occupiedColor = '#005AB5';
+    }
+  } else {
+    occupiedColor = 'white';
+  }
 
   return (
     <div
@@ -25,8 +49,8 @@ function Cell({ id, x, y, hit, occupied, playTurn, selected, children }: CellPro
         styles.Cell
       )}
       style={{
-        '--occupied': occupied ? '#005AB5' : 'white',
-        '--selected': selected ? '#DC3220' : occupied ? '#005AB5' : 'white',
+        '--occupied': occupiedColor,
+        '--selected': selectedColor,
       } as React.CSSProperties}
       onClick={playTurn}
     >
