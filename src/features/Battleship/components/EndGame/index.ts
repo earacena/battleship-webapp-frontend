@@ -1,0 +1,1 @@
+export { default as EndGame } from './EndGame';
