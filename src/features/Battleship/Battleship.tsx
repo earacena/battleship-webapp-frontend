@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
+import { EndGame } from "./components/EndGame";
 
 const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
@@ -227,7 +228,7 @@ function Battleship() {
           setEditing={setEditing}
         />
       )}
-      {gameEnded && <div>{`Winner is ${winner}`}</div>}
+      {gameEnded && <EndGame winner={winner} opponent={winner === 'player' ? 'bot' : 'player'} />}
       {!editing && !gameEnded && (
         <div>
           Scores
