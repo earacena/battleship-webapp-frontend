@@ -232,33 +232,38 @@ function Battleship() {
       {gameEnded && <EndGame winner={winner} opponent={winner === 'player' ? 'bot' : 'player'} />}
       {!editing && !gameEnded && (
         <div>
-          <Scores playerScore={playerScore} opponentScore={opponentScore} />
-          <Board size={boardSize} gridSize={gridSize}>
-            {board.map((row, y) =>
-              row.map((cell, x) => (
-                <Cell
-                  key={cell.id}
-                  {...cell}
-                  occupied={occupiedPositions[y][x]}
-                  hit={hitPositions[y][x]}
-                />
-              ))
-            )}
-          </Board>
-          <Board size={boardSize} gridSize={gridSize}>
-            {opponentBoard.map((row, y) =>
-              row.map((cell, x) => (
-                <Cell
-                  key={cell.id}
-                  {...cell}
-                  hidden={true}
-                  occupied={opponentOccupiedPositions[y][x]}
-                  hit={opponentHitPositions[y][x]}
-                  playTurn={() => playTurn(y, x, true)}
-                />
-              ))
-            )}
-          </Board>
+          <span style={{ textAlign: 'center', fontSize: "40px"}}>
+            <Scores playerScore={playerScore} opponentScore={opponentScore} />
+          </span>
+          <div style={{ textAlign: 'center' }}>
+            <Board size={boardSize} gridSize={gridSize}>
+              {board.map((row, y) =>
+                row.map((cell, x) => (
+                  <Cell
+                    key={cell.id}
+                    {...cell}
+                    occupied={occupiedPositions[y][x]}
+                    hit={hitPositions[y][x]}
+                  />
+                ))
+              )}
+            </Board>
+            <Board size={boardSize} gridSize={gridSize}>
+              {opponentBoard.map((row, y) =>
+                row.map((cell, x) => (
+                  <Cell
+                    key={cell.id}
+                    {...cell}
+                    hidden={true}
+                    occupied={opponentOccupiedPositions[y][x]}
+                    hit={opponentHitPositions[y][x]}
+                    playTurn={() => playTurn(y, x, true)}
+                  />
+                ))
+              )}
+            </Board>
+
+          </div>
         </div>
       )}
     </div>
