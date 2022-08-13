@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 import { EndGame } from "./components/EndGame";
+import { Scores } from "./components/Scores";
 
 const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
@@ -231,9 +232,7 @@ function Battleship() {
       {gameEnded && <EndGame winner={winner} opponent={winner === 'player' ? 'bot' : 'player'} />}
       {!editing && !gameEnded && (
         <div>
-          Scores
-          {`Player: ${playerScore}`}
-          {`Opponent: ${opponentScore}`}
+          <Scores playerScore={playerScore} opponentScore={opponentScore} />
           <Board size={boardSize} gridSize={gridSize}>
             {board.map((row, y) =>
               row.map((cell, x) => (
