@@ -122,8 +122,8 @@ function Battleship() {
   const gridSize: number = 50;
 
   const [editing, setEditing] = useState<boolean>(true);
-  const [board] = useState(() => generateBoard(boardSize));
-  const [opponentBoard] = useState(() => generateBoard(boardSize));
+  const [board, setBoard] = useState(() => generateBoard(boardSize));
+  const [opponentBoard, setOpponentBoard] = useState(() => generateBoard(boardSize));
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
@@ -136,7 +136,7 @@ function Battleship() {
   const [opponentHitPositions, setOpponentHitPositions] = useState<boolean[][]>(
     () => generateOccupiedPositions(boardSize)
   );
-  const [winner, setWinner] = useState<string>('');
+  const [winner, setWinner] = useState<string>("");
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
@@ -144,30 +144,47 @@ function Battleship() {
 
   useEffect(() => {
     if (playerScore === 17) {
-      setWinner('player');
+      setWinner("player");
       setGameEnded(true);
     }
 
     if (opponentScore === 17) {
-      setWinner('opponent');
+      setWinner("opponent");
       setGameEnded(true);
     }
   }, [playerScore, opponentScore]);
 
-  const canFire = useCallback((y: number, x: number) => {
-    if (playerTurn) {
-      if (opponentHitPositions[y][x]) {
-        return false;
-      }
-    } else {
-      // Check player's board for valid target
-      if (hitPositions[y][x]) {
-        return false;
-      }
-    }
+  const resetGame = () => {
+    setPlayerScore(0);
+    setOpponentScore(0);
+    setBoard(generateBoard(boardSize));
+    setOpponentBoard(generateBoard(boardSize));
+    setOccupiedPositions(generateOccupiedPositions(boardSize));
+    setHitPositions(generateOccupiedPositions(boardSize));
+    setOpponentHitPositions(generateOccupiedPositions(boardSize));
+    setWinner('');
+    setEditing(true);
+    setGameEnded(false);
+    setPlayerTurn(true);
+  };
 
-    return true;
-  }, [hitPositions, opponentHitPositions, playerTurn]);
+  const canFire = useCallback(
+    (y: number, x: number) => {
+      if (playerTurn) {
+        if (opponentHitPositions[y][x]) {
+          return false;
+        }
+      } else {
+        // Check player's board for valid target
+        if (hitPositions[y][x]) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+    [hitPositions, opponentHitPositions, playerTurn]
+  );
 
   useEffect(() => {
     if (!playerTurn) {
@@ -186,36 +203,33 @@ function Battleship() {
         prevHitPositions[y][x] = true;
         return prevHitPositions;
       });
-    
+
       setPlayerTurn(!playerTurn);
     }
   }, [playerTurn, canFire, occupiedPositions]);
-
 
   const playTurn = (y: number, x: number, turn: boolean) => {
     console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
 
     if (playerTurn === turn) {
-        // Allow player to fire
-        if (canFire(y, x)) {
-          if (opponentOccupiedPositions[y][x]) {
-            setPlayerScore((score) => score + 1);
-          }
-          setOpponentHitPositions((prevOpponentHitPositions) => {
-            prevOpponentHitPositions[y][x] = true;
-            return prevOpponentHitPositions;
-          });
-        } else {
-          return;
+      // Allow player to fire
+      if (canFire(y, x)) {
+        if (opponentOccupiedPositions[y][x]) {
+          setPlayerScore((score) => score + 1);
         }
-        
-        setPlayerTurn(!playerTurn);
+        setOpponentHitPositions((prevOpponentHitPositions) => {
+          prevOpponentHitPositions[y][x] = true;
+          return prevOpponentHitPositions;
+        });
+      } else {
+        return;
+      }
+
+      setPlayerTurn(!playerTurn);
     } else {
       return;
     }
   };
-
-
 
   return (
     <div>
@@ -229,13 +243,19 @@ function Battleship() {
           setEditing={setEditing}
         />
       )}
-      {gameEnded && <EndGame winner={winner} opponent={winner === 'player' ? 'bot' : 'player'} />}
+      {gameEnded && (
+        <EndGame
+          winner={winner}
+          opponent={winner === "player" ? "bot" : "player"}
+          resetGame={resetGame}
+        />
+      )}
       {!editing && !gameEnded && (
         <div>
-          <span style={{ textAlign: 'center', fontSize: "40px"}}>
+          <span style={{ textAlign: "center", fontSize: "40px" }}>
             <Scores playerScore={playerScore} opponentScore={opponentScore} />
           </span>
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: "center" }}>
             <Board size={boardSize} gridSize={gridSize}>
               {board.map((row, y) =>
                 row.map((cell, x) => (
@@ -262,7 +282,6 @@ function Battleship() {
                 ))
               )}
             </Board>
-
           </div>
         </div>
       )}
