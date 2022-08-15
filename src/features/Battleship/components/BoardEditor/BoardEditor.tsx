@@ -349,41 +349,45 @@ function BoardEditor({
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <DndContext
         sensors={sensors}
         onDragStart={handleOnDragStart}
         onDragCancel={handleOnDragCancel}
         onDragEnd={handleOnDragEnd}
       >
-        <Board size={boardSize} gridSize={gridSize}>
-          {board.map((row, y) =>
-            row.map((cell, x) => {
-              const occupied = occupiedPositions[y][x];
-              if (pieces[y][x]) {
-                const piece = pieces ? pieces[y][x] : null;
-                if (piece) {
-                  return (
-                    <Cell
-                      key={cell.id}
-                      {...cell}
-                      occupied={true}
-                      selected={piece.id === selected?.id}
-                    >
-                      <DraggablePiece key={piece.id} {...piece} />
-                    </Cell>
-                  );
+        <div>
+          <Board size={boardSize} gridSize={gridSize}>
+            {board.map((row, y) =>
+              row.map((cell, x) => {
+                const occupied = occupiedPositions[y][x];
+                if (pieces[y][x]) {
+                  const piece = pieces ? pieces[y][x] : null;
+                  if (piece) {
+                    return (
+                      <Cell
+                        key={cell.id}
+                        {...cell}
+                        occupied={true}
+                        selected={piece.id === selected?.id}
+                      >
+                        <DraggablePiece key={piece.id} {...piece} />
+                      </Cell>
+                    );
+                  }
                 }
-              }
-              return <Cell key={cell.id} {...cell} occupied={occupied} />;
-            })
-          )}
-        </Board>
+                return <Cell key={cell.id} {...cell} occupied={occupied} />;
+              })
+            )}
+          </Board>
+        </div>
       </DndContext>
-      <button onClick={handleRotate}>
-        Rotate {`selected: ${selected?.type}`}
-      </button>
-      <button onClick={() => setEditing(false)}>Ready!</button>
+      <div>
+        <button onClick={handleRotate}>
+          Rotate {`selected: ${selected?.type}`}
+        </button>
+        <button onClick={() => setEditing(false)}>Ready!</button>
+      </div>
     </div>
   );
 }
