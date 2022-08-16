@@ -141,20 +141,24 @@ function Battleship() {
   const [opponentScore, setOpponentScore] = useState<number>(0);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
   const [gameEnded, setGameEnded] = useState<boolean>(false);
+  const [gameResult, setGameResult] = useState<string>('');
 
   useEffect(() => {
     if (playerScore === 17) {
       setWinner("player");
       setGameEnded(true);
+      setGameResult('win');
     }
 
     if (opponentScore === 17) {
       setWinner("opponent");
       setGameEnded(true);
+      setGameResult('win');
     }
   }, [playerScore, opponentScore]);
 
   const resetGame = () => {
+    // Set all the states back to default
     setPlayerScore(0);
     setOpponentScore(0);
     setBoard(generateBoard(boardSize));
@@ -247,6 +251,7 @@ function Battleship() {
         <EndGame
           winner={winner}
           opponent={winner === "player" ? "bot" : "player"}
+          gameResult={gameResult}
           resetGame={resetGame}
         />
       )}
