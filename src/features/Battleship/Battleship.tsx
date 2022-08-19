@@ -143,34 +143,6 @@ function Battleship() {
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<string>('');
 
-  const ws = useRef<WebSocket>();
-
-  useEffect(() => {
-    ws.current = new WebSocket('ws://localhost:8080');
-    ws.current.onopen = () => {
-      console.log('connected to websocket server');
-      ws.current?.send('hi from client');
-    };
-    ws.current.onclose = () => {
-      console.log('closed connection to websocket server');
-    };
-
-    const wsCurrent = ws.current;
-
-    return () => {
-      wsCurrent.close();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!ws.current) {
-      return;
-    }
-
-    ws.current.onmessage = (event) => {
-      console.log(`message: ${event.data}`);
-    }
-  }, []);
 
   useEffect(() => {
     if (playerScore === 17) {
