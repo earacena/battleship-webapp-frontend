@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TitleHeader } from './components';
-import { Battleship } from './features/Battleship';
+import { Battleship, OnlineBattleship } from './features/Battleship';
 import { Menu } from './features/Menu';
 
 function App() {
@@ -11,6 +11,7 @@ function App() {
       <TitleHeader title="BATTLESHIP" />
       { mode === '' && <Menu setMode={setMode} />}
       { mode === 'solo' && <Battleship /> }
+      { mode === 'online' && <OnlineBattleship />}
     </div>
   );
 }
