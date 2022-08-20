@@ -1,4 +1,6 @@
 import React, { useRef, useEffect } from 'react';
+import { Message, zString } from './types/OnlineBattleship.types';
+import type { MessageType } from './types/OnlineBattleship.types';
 
 function OnlineBattleship() {
   const ws = useRef<WebSocket>();
@@ -26,7 +28,20 @@ function OnlineBattleship() {
     }
 
     ws.current.onmessage = (event) => {
-      console.log(`message: ${event.data}`);
+      // console.log(`message: ${event.data}`);
+      const messageJSON: string =  zString.parse(event.data);
+      const message: any = JSON.parse(messageJSON);
+      
+      if (Object.hasOwn(message, 'type')) {
+        switch (message.type) {
+          case 'message':
+            const parsedMessage: MessageType = Message.parse(message);
+            console.log(parsedMessage);
+            break;
+        };
+      } else {
+        console.error(`malformatted websocket message received: ${message}`)
+      }
     }
   }, []);
 
