@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { Message, zString } from './types/OnlineBattleship.types';
-import type { MessageType } from './types/OnlineBattleship.types';
+import { IdMessage, Message, zString } from './types/OnlineBattleship.types';
+import type { IdMessageType, MessageType} from './types/OnlineBattleship.types';
 
 function OnlineBattleship() {
   const ws = useRef<WebSocket>();
@@ -34,6 +34,10 @@ function OnlineBattleship() {
       
       if (Object.hasOwn(message, 'type')) {
         switch (message.type) {
+          case 'id':
+            const parsedIdMessage: IdMessageType = IdMessage.parse(message);
+            console.log(`id: ${parsedIdMessage.message}`);
+            break;
           case 'message':
             const parsedMessage: MessageType = Message.parse(message);
             console.log(parsedMessage);
