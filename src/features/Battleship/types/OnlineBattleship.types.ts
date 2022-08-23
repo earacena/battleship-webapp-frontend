@@ -12,5 +12,11 @@ export const Message = z.object({
   message: z.string(),
 });
 
+export const OpponentInfoMessage = z.object({
+  type: z.string(),
+  message: z.string(),
+});
+
 export type IdMessageType = z.infer<typeof IdMessage>;
 export type MessageType = z.infer<typeof Message>;
+export type OpponentInfoMessageType = z.infer<typeof OpponentInfoMessage>;
