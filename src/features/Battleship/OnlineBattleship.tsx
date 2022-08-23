@@ -1,9 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { IdMessage, Message, zString } from './types/OnlineBattleship.types';
-import type { IdMessageType, MessageType} from './types/OnlineBattleship.types';
+import { IdMessage, Message, OpponentInfoMessage, zString } from './types/OnlineBattleship.types';
+import type { IdMessageType, MessageType, OpponentInfoMessageType} from './types/OnlineBattleship.types';
 
 function OnlineBattleship() {
   const [isQueuing, setIsQueuing] = useState<boolean>(false);
+  const [isMatched, setIsMatched] = useState<boolean>(false);
+  const [opponentId, setOpponentId] = useState<string>('');
+
   const ws = useRef<WebSocket>();
 
   useEffect(() => {
@@ -45,6 +48,13 @@ function OnlineBattleship() {
           case 'queued user':
             setIsQueuing(true);
             break;
+          case 'matched with user':
+            setIsQueuing(false);
+            setIsMatched(true);
+
+            const parsedOpponentInfoMessage: OpponentInfoMessageType = OpponentInfoMessage.parse(message);
+            setOpponentId(parsedOpponentInfoMessage.message);
+            break;
         };
       } else {
         console.error(`malformatted websocket message received: ${message}`)
@@ -63,8 +73,9 @@ function OnlineBattleship() {
 
   return (
     <div>
-      {!isQueuing && "Currently not waiting in a queue"}
+      {!isQueuing && !isMatched && "Currently not waiting in a queue"}
       {isQueuing && "Waiting in a queue..."}
+      {!isQueuing && isMatched && `${opponentId} is your opponent`}
       <button onClick={handleEnqueue}>Queue for match</button>
     </div>
   );
