@@ -20,7 +20,9 @@ function OnlineBattleship() {
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
+  const [isOpponentReady, setIsOpponentReady] = useState<boolean>(false);
 
+  // Websockets
   const ws = useRef<WebSocket>();
 
   useEffect(() => {
@@ -69,12 +71,22 @@ function OnlineBattleship() {
             const parsedOpponentInfoMessage: OpponentInfoMessageType = OpponentInfoMessage.parse(message);
             setOpponentId(parsedOpponentInfoMessage.message);
             break;
+          case 'opponent is ready':
+            setIsOpponentReady(true);
+            break;
         };
       } else {
         console.error(`malformatted websocket message received: ${message}`)
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (!editing) {
+      const messageJson: string = JSON.stringify({ type: 'ready' });
+      ws.current?.send(messageJson);
+    }
+  }, [editing]);
 
   const handleEnqueue = () => {
     if (!ws.current) {
@@ -91,7 +103,19 @@ function OnlineBattleship() {
       {isQueuing && "Waiting in a queue..."}
       {!isQueuing && isMatched && (
         <div>
-          {`${opponentId} is your opponent!`}
+          <div>
+            <p>{`${opponentId} is your opponent!`}</p>
+            {isOpponentReady
+            ? (
+              <span style={{ color: 'green' } as React.CSSProperties}>
+                {'Opponent is Ready'}
+              </span> 
+            ) : (
+              <span style={{ color: 'gray' } as React.CSSProperties}>
+                {!editing && 'Opponent is currently editing their board...' }
+              </span>
+            )}
+          </div>
           <BoardEditor 
             board={board}
             boardSize={boardSize}
@@ -99,6 +123,7 @@ function OnlineBattleship() {
             occupiedPositions={occupiedPositions}
             setOccupiedPositions={setOccupiedPositions}
             setEditing={setEditing}
+            editing={editing}
           />
         </div>
       )}
