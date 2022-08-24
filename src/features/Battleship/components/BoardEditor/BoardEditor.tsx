@@ -19,6 +19,7 @@ type BoardEditorProps = {
   gridSize: number;
   occupiedPositions: boolean[][];
   setOccupiedPositions: (value: React.SetStateAction<boolean[][]>) => void;
+  editing: boolean;
   setEditing: (value: React.SetStateAction<boolean>) => void;
 };
 
@@ -198,6 +199,7 @@ function BoardEditor({
   gridSize,
   occupiedPositions,
   setOccupiedPositions,
+  editing,
   setEditing,
 }: BoardEditorProps) {
   const [pieces, setPieces] = useState<(PieceProps | undefined)[][]>();
@@ -386,10 +388,10 @@ function BoardEditor({
         </div>
       </DndContext>
       <div>
-        <button onClick={handleRotate}>
+        <button onClick={handleRotate} disabled={!editing}>
           Rotate {`selected: ${selected?.type}`}
         </button>
-        <button onClick={() => setEditing(false)}>Ready!</button>
+        <button onClick={() => setEditing(false)} disabled={!editing}>Ready!</button>
       </div>
     </div>
   );

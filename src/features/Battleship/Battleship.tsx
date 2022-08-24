@@ -253,6 +253,7 @@ function Battleship() {
           occupiedPositions={occupiedPositions}
           setOccupiedPositions={setOccupiedPositions}
           setEditing={setEditing}
+          editing={editing}
         />
       )}
       {gameEnded && (
