@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 import { EndGame } from "./components/EndGame";
 import { Scores } from "./components/Scores";
 
-const generateBoard = (boardSize: number): CellProps[][] => {
+export const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
   const board: CellProps[][] = Array.from(
     Array(boardSize),
@@ -27,7 +27,7 @@ const generateBoard = (boardSize: number): CellProps[][] => {
   return board;
 };
 
-const generateOccupiedPositions = (boardSize: number): boolean[][] => {
+export const generateOccupiedPositions = (boardSize: number): boolean[][] => {
   const occupiedPositions: boolean[][] = Array.from(
     Array(boardSize),
     () => new Array(boardSize)
@@ -118,6 +118,8 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
 };
 
 function Battleship() {
+
+  // BoardEditor states
   const boardSize: number = 10;
   const gridSize: number = 50;
 
@@ -127,19 +129,24 @@ function Battleship() {
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
+  
+  // Game states
   const [opponentOccupiedPositions] = useState<boolean[][]>(() =>
     generateRandomOccupiedPositions(boardSize)
   );
+
   const [hitPositions, setHitPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
   const [opponentHitPositions, setOpponentHitPositions] = useState<boolean[][]>(
     () => generateOccupiedPositions(boardSize)
   );
-  const [winner, setWinner] = useState<string>("");
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
+  
+  // EndGame states
+  const [winner, setWinner] = useState<string>("");
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<string>('');
 
