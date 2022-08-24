@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DraggablePiece, PieceProps } from "../Piece";
 import { Cell, CellProps } from "../Cell";
 import {
@@ -200,9 +200,7 @@ function BoardEditor({
   setOccupiedPositions,
   setEditing,
 }: BoardEditorProps) {
-  const [pieces, setPieces] = useState(() =>
-    generatePieces(boardSize, gridSize, setOccupiedPositions)
-  );
+  const [pieces, setPieces] = useState<(PieceProps | undefined)[][]>();
   const [movingPiece, setMovingPiece] = useState<PieceProps | null>(null);
   const [selected, setSelected] = useState<PieceProps | null>(null);
 
@@ -211,8 +209,12 @@ function BoardEditor({
   const keyboardSensor = useSensor(KeyboardSensor, {});
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
+  useEffect(() => {
+    setPieces(generatePieces(boardSize, gridSize, setOccupiedPositions));
+  }, []);
+
   const handleRotate = () => {
-    if (selected && canRotate(selected, occupiedPositions)) {
+    if (selected && canRotate(selected, occupiedPositions) && pieces) {
       setOccupiedPositions((prevOccupiedPositions) => {
         // Unoccupy old positions
         if (selected.vertical) {
@@ -270,17 +272,19 @@ function BoardEditor({
   };
 
   const handleOnDragStart = ({ active }: DragStartEvent) => {
-    const piece = pieces.reduce<PieceProps | undefined>((acc, row) => {
-      return acc ?? row.find((cell) => cell?.id === active.id);
-    }, undefined);
-
-    if (piece) {
-      setMovingPiece(piece);
+    if (pieces) {
+      const piece = pieces.reduce<PieceProps | undefined>((acc, row) => {
+        return acc ?? row.find((cell) => cell?.id === active.id);
+      }, undefined);
+  
+      if (piece) {
+        setMovingPiece(piece);
+      }
     }
   };
 
   const handleOnDragEnd = (event: DragEndEvent): void => {
-    if (!movingPiece?.position || !event.over?.id) {
+    if (!movingPiece?.position || !event.over?.id || !pieces) {
       return;
     }
 
@@ -360,8 +364,7 @@ function BoardEditor({
           <Board size={boardSize} gridSize={gridSize}>
             {board.map((row, y) =>
               row.map((cell, x) => {
-                const occupied = occupiedPositions[y][x];
-                if (pieces[y][x]) {
+                if (pieces && pieces[y][x]) {
                   const piece = pieces ? pieces[y][x] : null;
                   if (piece) {
                     return (
@@ -376,7 +379,7 @@ function BoardEditor({
                     );
                   }
                 }
-                return <Cell key={cell.id} {...cell} occupied={occupied} />;
+                return <Cell key={cell.id} {...cell} occupied={occupiedPositions[y][x]} />;
               })
             )}
           </Board>
