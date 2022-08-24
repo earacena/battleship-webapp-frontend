@@ -1,11 +1,25 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { generateBoard, generateOccupiedPositions } from './Battleship';
 import { IdMessage, Message, OpponentInfoMessage, zString } from './types/OnlineBattleship.types';
 import type { IdMessageType, MessageType, OpponentInfoMessageType} from './types/OnlineBattleship.types';
+import { BoardEditor } from './components/BoardEditor';
 
 function OnlineBattleship() {
+  // Queuing states
   const [isQueuing, setIsQueuing] = useState<boolean>(false);
   const [isMatched, setIsMatched] = useState<boolean>(false);
   const [opponentId, setOpponentId] = useState<string>('');
+
+  // BoardEditor states
+  const boardSize: number = 10;
+  const gridSize: number = 50;
+
+  const [editing, setEditing] = useState<boolean>(true);
+  const [board, setBoard] = useState(() => generateBoard(boardSize));
+  const [opponentBoard, setOpponentBoard] = useState(() => generateBoard(boardSize));
+  const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
+    generateOccupiedPositions(boardSize)
+  );
 
   const ws = useRef<WebSocket>();
 
@@ -75,8 +89,20 @@ function OnlineBattleship() {
     <div>
       {!isQueuing && !isMatched && "Currently not waiting in a queue"}
       {isQueuing && "Waiting in a queue..."}
-      {!isQueuing && isMatched && `${opponentId} is your opponent`}
-      <button onClick={handleEnqueue}>Queue for match</button>
+      {!isQueuing && isMatched && (
+        <div>
+          {`${opponentId} is your opponent!`}
+          <BoardEditor 
+            board={board}
+            boardSize={boardSize}
+            gridSize={gridSize}
+            occupiedPositions={occupiedPositions}
+            setOccupiedPositions={setOccupiedPositions}
+            setEditing={setEditing}
+          />
+        </div>
+      )}
+      {!isQueuing && !isMatched && <button onClick={handleEnqueue}>Queue for match</button>}
     </div>
   );
 }
