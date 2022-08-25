@@ -178,6 +178,7 @@ function Battleship() {
     setEditing(true);
     setGameEnded(false);
     setPlayerTurn(true);
+    setGameResult('');
   };
 
   const canFire = useCallback(
