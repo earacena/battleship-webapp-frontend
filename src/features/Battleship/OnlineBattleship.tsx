@@ -22,6 +22,26 @@ function OnlineBattleship() {
   );
   const [isOpponentReady, setIsOpponentReady] = useState<boolean>(false);
 
+  // Game states
+  const [opponentOccupiedPositions] = useState<boolean[][]>(() =>
+    generateOccupiedPositions(boardSize)
+  );
+
+  const [hitPositions, setHitPositions] = useState<boolean[][]>(() =>
+    generateOccupiedPositions(boardSize)
+  );
+  const [opponentHitPositions, setOpponentHitPositions] = useState<boolean[][]>(
+    () => generateOccupiedPositions(boardSize)
+  );
+  const [playerScore, setPlayerScore] = useState<number>(0);
+  const [opponentScore, setOpponentScore] = useState<number>(0);
+  const [playerTurn, setPlayerTurn] = useState<boolean>(true);
+
+  // EndGame states
+  const [winner, setWinner] = useState<string>("");
+  const [gameEnded, setGameEnded] = useState<boolean>(false);
+  const [gameResult, setGameResult] = useState<string>('');
+
   // Websockets
   const ws = useRef<WebSocket>();
 
@@ -74,6 +94,9 @@ function OnlineBattleship() {
           case 'opponent is ready':
             setIsOpponentReady(true);
             break;
+          case 'opponent disconnected':
+            resetGame();
+            break;
         };
       } else {
         console.error(`malformatted websocket message received: ${message}`)
@@ -87,6 +110,26 @@ function OnlineBattleship() {
       ws.current?.send(messageJson);
     }
   }, [editing]);
+
+  const resetGame = () => {
+    // Set all the states back to default
+    console.log('opponent disconnected, reseting game');
+    setPlayerScore(0);
+    setOpponentScore(0);
+    setBoard(generateBoard(boardSize));
+    setOpponentBoard(generateBoard(boardSize));
+    setOccupiedPositions(generateOccupiedPositions(boardSize));
+    setHitPositions(generateOccupiedPositions(boardSize));
+    setOpponentHitPositions(generateOccupiedPositions(boardSize));
+    setWinner('');
+    setEditing(true);
+    setGameEnded(false);
+    setPlayerTurn(true);
+    setGameResult('');
+    setIsQueuing(false);
+    setIsMatched(false);
+    setOpponentId('');
+  };
 
   const handleEnqueue = () => {
     if (!ws.current) {
