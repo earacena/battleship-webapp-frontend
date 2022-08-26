@@ -1,8 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { generateBoard, generateOccupiedPositions } from './Battleship';
-import { IdMessage, Message, OpponentInfoMessage, zString } from './types/OnlineBattleship.types';
+import { IdMessage, Message, OpponentInfoMessage, PlayerFiredMessage, PlayerFiredMessageType, TurnMessage, TurnMessageType, zString } from './types/OnlineBattleship.types';
 import type { IdMessageType, MessageType, OpponentInfoMessageType} from './types/OnlineBattleship.types';
 import { BoardEditor } from './components/BoardEditor';
+import { Scores } from './components/Scores';
+import { Board, Cell } from './components';
+import { EndGame } from './components/EndGame';
 
 function OnlineBattleship() {
   // Queuing states
@@ -23,7 +26,7 @@ function OnlineBattleship() {
   const [isOpponentReady, setIsOpponentReady] = useState<boolean>(false);
 
   // Game states
-  const [opponentOccupiedPositions] = useState<boolean[][]>(() =>
+  const [opponentOccupiedPositions, setOpponentOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
 
@@ -35,7 +38,8 @@ function OnlineBattleship() {
   );
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
-  const [playerTurn, setPlayerTurn] = useState<boolean>(true);
+  const [playerTurn, setPlayerTurn] = useState<string>('');
+  const [turn, setTurn] = useState<string>('first');
 
   // EndGame states
   const [winner, setWinner] = useState<string>("");
@@ -94,6 +98,56 @@ function OnlineBattleship() {
           case 'opponent is ready':
             setIsOpponentReady(true);
             break;
+          case 'decide player turn':
+            const parsedDecidePlayerTurnMessage = Message.parse(message);
+            setPlayerTurn(parsedDecidePlayerTurnMessage.message);
+            break;
+          case 'turn':
+            const parsedTurnMessage: TurnMessageType = TurnMessage.parse(message);
+            setTurn(parsedTurnMessage.message);
+            break;
+          case 'opponent fired':
+            const parsedPlayerFiredMessage: PlayerFiredMessageType = PlayerFiredMessage.parse(message);
+            const { y, x } = JSON.parse(parsedPlayerFiredMessage.message);
+
+            // Check if opponent shot hit or miss
+            if (occupiedPositions[y][x]) {
+              // Hit
+              setOpponentScore((score) => score + 1);
+              setHitPositions((prevHitPositions) => {
+                prevHitPositions[y][x] = true;
+                return prevHitPositions;
+              });
+              ws.current?.send(JSON.stringify({ type: 'report hit', message: JSON.stringify({ y, x }) }));
+            } else {
+              // Miss
+              setHitPositions((prevHitPositions) => {
+                prevHitPositions[y][x] = true;
+                return prevHitPositions;
+              });
+              ws.current?.send(JSON.stringify({ type: 'report miss', message: JSON.stringify({ y, x }) }));
+            }
+            break;
+          case 'reporting hit': {
+            const { y, x } = JSON.parse(Message.parse(message).message);
+            setPlayerScore((score) => score + 1);
+            setOpponentOccupiedPositions((prevOpponentOccupiedPositions) => {
+              prevOpponentOccupiedPositions[y][x] = true;
+              return prevOpponentOccupiedPositions;
+            });
+            setOpponentHitPositions((prevOpponentHitPositions) => {
+              prevOpponentHitPositions[y][x] = true;
+              return prevOpponentHitPositions;
+            });
+          } break;
+          case 'reporting miss': {
+            const { y, x } = JSON.parse(Message.parse(message).message);
+            setOpponentHitPositions((prevOpponentHitPositions) => {
+              prevOpponentHitPositions[y][x] = true;
+              return prevOpponentHitPositions;
+            });
+
+          } break;
           case 'opponent disconnected':
             resetGame();
             break;
@@ -124,7 +178,7 @@ function OnlineBattleship() {
     setWinner('');
     setEditing(true);
     setGameEnded(false);
-    setPlayerTurn(true);
+    setPlayerTurn('first');
     setGameResult('');
     setIsQueuing(false);
     setIsMatched(false);
@@ -140,11 +194,25 @@ function OnlineBattleship() {
     ws.current?.send(messageJSON);
   };
 
+  const canFire = useCallback(
+    (y: number, x: number) => playerTurn === turn && !opponentHitPositions[y][x],
+    [opponentHitPositions, turn, playerTurn]
+  );
+
+  const playTurn = (y: number, x: number) => {
+    console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+    if (canFire(y, x)) {
+      ws.current?.send(JSON.stringify({ type: 'fired at position', message: JSON.stringify({ y, x }) }));
+    } else {
+      return;
+    }
+  };
+
   return (
     <div>
       {!isQueuing && !isMatched && "Currently not waiting in a queue"}
       {isQueuing && "Waiting in a queue..."}
-      {!isQueuing && isMatched && (
+      {!isQueuing && isMatched && editing && (
         <div>
           <div>
             <p>{`${opponentId} is your opponent!`}</p>
@@ -169,6 +237,49 @@ function OnlineBattleship() {
             editing={editing}
           />
         </div>
+      )}
+      {!editing && isMatched && !gameEnded && (
+        <div>
+          <span style={{ textAlign: "center", fontSize: "40px" }}>
+            <Scores playerScore={playerScore} opponentScore={opponentScore} />
+          </span>
+          <div style={{ textAlign: "center" }}>
+            <Board size={boardSize} gridSize={gridSize}>
+              {board.map((row, y) =>
+                row.map((cell, x) => (
+                  <Cell
+                    key={cell.id}
+                    {...cell}
+                    occupied={occupiedPositions[y][x]}
+                    hit={hitPositions[y][x]}
+                  />
+                ))
+              )}
+            </Board>
+            <Board size={boardSize} gridSize={gridSize}>
+              {opponentBoard.map((row, y) =>
+                row.map((cell, x) => (
+                  <Cell
+                    key={cell.id}
+                    {...cell}
+                    hidden={true}
+                    occupied={opponentOccupiedPositions[y][x]}
+                    hit={opponentHitPositions[y][x]}
+                    playTurn={() => playTurn(y, x)}
+                  />
+                ))
+              )}
+            </Board>
+          </div>
+        </div>
+      )}
+      {gameEnded && (
+        <EndGame
+          winner={winner}
+          opponent={opponentId}
+          gameResult={gameResult}
+          resetGame={resetGame}
+        />
       )}
       {!isQueuing && !isMatched && <button onClick={handleEnqueue}>Queue for match</button>}
     </div>
