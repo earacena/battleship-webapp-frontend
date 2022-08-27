@@ -305,6 +305,7 @@ function OnlineBattleship() {
           <span style={{ textAlign: "center", fontSize: "40px" }}>
             <Scores playerScore={playerScore} opponentScore={opponentScore} />
           </span>
+          {turn === playerTurn && "Your turn"}
           <div style={{ textAlign: "center" }}>
             <Board size={boardSize} gridSize={gridSize}>
               {board.map((row, y) =>
