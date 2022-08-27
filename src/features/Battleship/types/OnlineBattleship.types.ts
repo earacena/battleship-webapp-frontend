@@ -4,7 +4,7 @@ export const zString = z.string();
 
 export const IdMessage = z.object({
   type: z.string(),
-  message: z.string(),
+  id: z.string(),
 });
 
 export const Message = z.object({
@@ -14,17 +14,20 @@ export const Message = z.object({
 
 export const OpponentInfoMessage = z.object({
   type: z.string(),
-  message: z.string(),
+  opponentId: z.string(),
 });
 
 export const TurnMessage = z.object({
   type: z.string(),
-  message: z.string(),
+  turn: z.string(),
 });
 
 export const PlayerFiredMessage = z.object({
   type: z.string(),
-  message: z.string(),
+  position: z.object({
+    y: z.number(),
+    x: z.number(),
+  }),
 });
 
 export type IdMessageType = z.infer<typeof IdMessage>;
