@@ -5,15 +5,16 @@ import {
   Message,
   OpponentInfoMessage,
   PlayerFiredMessage,
-  PlayerFiredMessageType,
   TurnMessage,
-  TurnMessageType,
   zString,
+  AnnounceWinnerMessage,
 } from "./types/OnlineBattleship.types";
 import type {
   IdMessageType,
+  TurnMessageType,
   MessageType,
   OpponentInfoMessageType,
+  PlayerFiredMessageType,
 } from "./types/OnlineBattleship.types";
 import { BoardEditor } from "./components/BoardEditor";
 import { Scores } from "./components/Scores";
@@ -58,6 +59,7 @@ function OnlineBattleship() {
 
   // EndGame states
   const [winner, setWinner] = useState<string>("");
+  const [loser, setLoser] = useState<string>("");
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<string>("");
 
@@ -177,6 +179,15 @@ function OnlineBattleship() {
                 prevOpponentHitPositions[y][x] = true;
                 return prevOpponentHitPositions;
               });
+            }
+            break;
+          case "announce winner":
+            {
+              const parsedAnnounceWinnerMessage = AnnounceWinnerMessage.parse(message);
+              setGameEnded(true);
+              setGameResult("win");
+              setWinner(parsedAnnounceWinnerMessage.winner);
+              setLoser(parsedAnnounceWinnerMessage.loser);
             }
             break;
           case "opponent disconnected":
@@ -312,7 +323,7 @@ function OnlineBattleship() {
       {gameEnded && (
         <EndGame
           winner={winner}
-          opponent={opponentId}
+          loser={loser}
           gameResult={gameResult}
           resetGame={resetGame}
         />
