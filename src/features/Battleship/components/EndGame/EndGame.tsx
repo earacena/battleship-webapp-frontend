@@ -2,13 +2,13 @@ import React from 'react';
 
 type EndGameProps = {
   winner: string,
-  opponent: string,
+  loser: string,
   gameResult: string,
   resetGame: () => void,
 };
 
-function EndGame({ winner, opponent, gameResult, resetGame }: EndGameProps) {
-  const winningMessage: string = `${winner} has sunk all of ${opponent}'s ships!`;
+function EndGame({ winner, loser, gameResult, resetGame }: EndGameProps) {
+  const winningMessage: string = `${winner} has sunk all of ${loser}'s ships!`;
   const drawMessage: string = "Both players at a draw!";
 
   const message = gameResult === 'win' ? winningMessage : drawMessage;
