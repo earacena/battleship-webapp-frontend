@@ -260,7 +260,7 @@ function OnlineBattleship() {
     <div>
       {!isQueuing && !isMatched && "Currently not waiting in a queue"}
       {isQueuing && "Waiting in a queue..."}
-      {!isQueuing && isMatched && editing && (
+      {!isQueuing && isMatched && (editing || !isOpponentReady) && (
         <div>
           <div>
             <p>{`${opponentId} is your opponent!`}</p>
@@ -274,18 +274,33 @@ function OnlineBattleship() {
               </span>
             )}
           </div>
-          <BoardEditor
-            board={board}
-            boardSize={boardSize}
-            gridSize={gridSize}
-            occupiedPositions={occupiedPositions}
-            setOccupiedPositions={setOccupiedPositions}
-            setEditing={setEditing}
-            editing={editing}
-          />
+          { editing ? (
+            <BoardEditor
+              board={board}
+              boardSize={boardSize}
+              gridSize={gridSize}
+              occupiedPositions={occupiedPositions}
+              setOccupiedPositions={setOccupiedPositions}
+              setEditing={setEditing}
+              editing={editing}
+            />
+          ) : (
+            <Board size={boardSize} gridSize={gridSize}>
+              {board.map((row, y) =>
+                row.map((cell, x) => (
+                  <Cell
+                    key={cell.id}
+                    {...cell}
+                    occupied={occupiedPositions[y][x]}
+                    hit={hitPositions[y][x]}
+                  />
+                ))
+              )}
+            </Board>
+          )}
         </div>
       )}
-      {!editing && isMatched && !gameEnded && (
+      {!editing && isOpponentReady && isMatched && !gameEnded && (
         <div>
           <span style={{ textAlign: "center", fontSize: "40px" }}>
             <Scores playerScore={playerScore} opponentScore={opponentScore} />
