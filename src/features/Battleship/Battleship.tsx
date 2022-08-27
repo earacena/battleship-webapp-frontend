@@ -260,7 +260,7 @@ function Battleship() {
       {gameEnded && (
         <EndGame
           winner={winner}
-          opponent={winner === "player" ? "bot" : "player"}
+          loser={winner === "player" ? "bot" : "player"}
           gameResult={gameResult}
           resetGame={resetGame}
         />
