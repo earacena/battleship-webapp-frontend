@@ -30,8 +30,15 @@ export const PlayerFiredMessage = z.object({
   }),
 });
 
+export const AnnounceWinnerMessage = z.object({
+  type: z.string(),
+  winner: z.string(),
+  loser: z.string(),
+});
+
 export type IdMessageType = z.infer<typeof IdMessage>;
 export type MessageType = z.infer<typeof Message>;
 export type OpponentInfoMessageType = z.infer<typeof OpponentInfoMessage>;
 export type TurnMessageType = z.infer<typeof TurnMessage>;
 export type PlayerFiredMessageType = z.infer<typeof PlayerFiredMessage>;
+export type AnnounceWinnerMessageType = z.infer<typeof AnnounceWinnerMessage>;
