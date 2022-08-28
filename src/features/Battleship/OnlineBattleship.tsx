@@ -225,6 +225,7 @@ function OnlineBattleship() {
     setIsQueuing(false);
     setIsMatched(false);
     setOpponentId("");
+    setIsOpponentReady(false);
   };
 
   const handleEnqueue = () => {
