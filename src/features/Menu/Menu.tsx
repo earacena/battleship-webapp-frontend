@@ -1,14 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-type MenuProps = {
-  setMode: (value: React.SetStateAction<string>) => void,
-};
+function Menu() {
+  const navigate = useNavigate();
 
-function Menu({ setMode }: MenuProps) {
   return (
     <div>
-      <button onClick={() => setMode('solo')}>Solo</button>
-      <button onClick={() => setMode('online')}> Online</button>
+      <button onClick={() => navigate("/solo")}>Solo</button>
+      <button onClick={() => navigate("/online")}> Online</button>
     </div>
   );
 };
