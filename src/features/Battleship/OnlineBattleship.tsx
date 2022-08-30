@@ -20,9 +20,12 @@ import { BoardEditor } from "./components/BoardEditor";
 import { Scores } from "./components/Scores";
 import { Board, Cell } from "./components";
 import { EndGame } from "./components/EndGame";
+import { Button } from "../../components";
+import { BsCheck, BsCheck2 } from "react-icons/bs";
 
 function OnlineBattleship() {
   // Queuing states
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isQueuing, setIsQueuing] = useState<boolean>(false);
   const [isMatched, setIsMatched] = useState<boolean>(false);
   const [opponentId, setOpponentId] = useState<string>("");
@@ -70,6 +73,7 @@ function OnlineBattleship() {
     ws.current = new WebSocket("ws://localhost:8080");
     ws.current.onopen = () => {
       console.log("connected to websocket server");
+      setIsConnected(true);
     };
     ws.current.onclose = () => {
       console.log("closed connection to websocket server");
@@ -117,7 +121,8 @@ function OnlineBattleship() {
             setIsOpponentReady(true);
             break;
           case "decide player turn":
-            const parsedDecidePlayerTurnMessage: TurnMessageType = TurnMessage.parse(message);
+            const parsedDecidePlayerTurnMessage: TurnMessageType =
+              TurnMessage.parse(message);
             setPlayerTurn(parsedDecidePlayerTurnMessage.turn);
             break;
           case "turn":
@@ -183,7 +188,8 @@ function OnlineBattleship() {
             break;
           case "announce winner":
             {
-              const parsedAnnounceWinnerMessage = AnnounceWinnerMessage.parse(message);
+              const parsedAnnounceWinnerMessage =
+                AnnounceWinnerMessage.parse(message);
               setGameEnded(true);
               setGameResult("win");
               setWinner(parsedAnnounceWinnerMessage.winner);
@@ -259,8 +265,16 @@ function OnlineBattleship() {
 
   return (
     <div>
-      {!isQueuing && !isMatched && "Currently not waiting in a queue"}
-      {isQueuing && "Waiting in a queue..."}
+      {!isQueuing && !isMatched && (
+        <span style={{ fontSize: "40px" } as React.CSSProperties}>
+          {"Not waiting in the queue."}
+        </span>
+      )}
+      {isQueuing && (
+        <span style={{ fontSize: "40px" } as React.CSSProperties}>
+          {"Waiting in queue."}
+        </span>
+      )}
       {!isQueuing && isMatched && (editing || !isOpponentReady) && (
         <div>
           <div>
@@ -275,7 +289,7 @@ function OnlineBattleship() {
               </span>
             )}
           </div>
-          { editing ? (
+          {editing ? (
             <BoardEditor
               board={board}
               boardSize={boardSize}
@@ -346,7 +360,32 @@ function OnlineBattleship() {
         />
       )}
       {!isQueuing && !isMatched && (
-        <button onClick={handleEnqueue}>Queue for match</button>
+        <div
+          style={
+            { display: "flex", flexDirection: "column" } as React.CSSProperties
+          }
+        >
+          <Button onClick={() => handleEnqueue()} disabled={isQueuing}>
+            <span
+              style={
+                {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                } as React.CSSProperties
+              }
+            >
+              Join Queue
+              {isConnected && (
+                <BsCheck style={{ color: "green" } as React.CSSProperties} />
+              )}
+              {!isConnected && (
+                <BsCheck2 style={{ color: "red" } as React.CSSProperties} />
+              )}
+            </span>
+          </Button>
+        </div>
       )}
     </div>
   );
