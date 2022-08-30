@@ -12,6 +12,9 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import Board from "../Board/Board";
+import { Button } from '../../../../components';
+import { GrRotateLeft } from "react-icons/gr";
+import { BsCheck2 } from "react-icons/bs";
 
 type BoardEditorProps = {
   board: CellProps[][];
@@ -387,11 +390,15 @@ function BoardEditor({
           </Board>
         </div>
       </DndContext>
-      <div>
-        <button onClick={handleRotate} disabled={!editing}>
-          Rotate {`selected: ${selected?.type}`}
-        </button>
-        <button onClick={() => setEditing(false)} disabled={!editing}>Ready!</button>
+      <div style={{ display: 'flex', flexDirection: 'row' } as React.CSSProperties}>
+        <Button onClick={handleRotate} disabled={!editing}>
+          <GrRotateLeft />
+          Rotate selected
+        </Button>
+        <Button onClick={() => setEditing(false)} disabled={!editing}>
+          <BsCheck2 />
+          Ready!
+        </Button>
       </div>
     </div>
   );
