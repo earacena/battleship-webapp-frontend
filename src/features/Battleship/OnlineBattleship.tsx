@@ -21,7 +21,7 @@ import { Scores } from "./components/Scores";
 import { Board, Cell } from "./components";
 import { EndGame } from "./components/EndGame";
 import { Button } from "../../components";
-import { BsCheck, BsCheck2 } from "react-icons/bs";
+import { BsCheck2, BsX } from "react-icons/bs";
 
 function OnlineBattleship() {
   // Queuing states
@@ -378,10 +378,10 @@ function OnlineBattleship() {
             >
               Join Queue
               {isConnected && (
-                <BsCheck style={{ color: "green" } as React.CSSProperties} />
+                <BsCheck2 style={{ color: "green" } as React.CSSProperties} />
               )}
               {!isConnected && (
-                <BsCheck2 style={{ color: "red" } as React.CSSProperties} />
+                <BsX style={{ color: "red" } as React.CSSProperties} />
               )}
             </span>
           </Button>
