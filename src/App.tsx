@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="App" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } as React.CSSProperties}>
-      <button style={{ cursor: 'pointer' } as React.CSSProperties}onClick={() => navigate("/")}>
+      <button style={{ border: 'none', cursor: 'pointer' } as React.CSSProperties} onClick={() => navigate("/")}>
         <TitleHeader title="BATTLESHIP" />
       </button>
       <Routes>
