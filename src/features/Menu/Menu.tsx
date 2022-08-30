@@ -1,13 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BsPerson } from 'react-icons/bs';
+import { Button } from '../../components';
 
 function Menu() {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <button onClick={() => navigate("/solo")}>Solo</button>
-      <button onClick={() => navigate("/online")}> Online</button>
+    <div style={{ display: 'flex', flexDirection: 'row' } as React.CSSProperties}>
+      <Button onClick={() => navigate("/solo")}>
+         Solo
+        <BsPerson />
+      </Button>
+      <Button onClick={() => navigate("/online")}>
+        Online
+        <span>
+          <BsPerson />
+          <BsPerson />
+        </span>
+      </Button>
     </div>
   );
 };
