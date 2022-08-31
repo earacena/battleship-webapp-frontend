@@ -1,4 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
+import { BsCheck2, BsX } from "react-icons/bs";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { generateBoard, generateOccupiedPositions } from "./Battleship";
 import {
   IdMessage,
@@ -21,7 +23,8 @@ import { Scores } from "./components/Scores";
 import { Board, Cell } from "./components";
 import { EndGame } from "./components/EndGame";
 import { Button } from "../../components";
-import { BsCheck2, BsX } from "react-icons/bs";
+import styles from "./styles/onlineBattleship.module.css";
+import classNames from "classnames";
 
 function OnlineBattleship() {
   // Queuing states
@@ -272,7 +275,10 @@ function OnlineBattleship() {
       )}
       {isQueuing && (
         <span style={{ fontSize: "40px" } as React.CSSProperties}>
-          {"Waiting in queue."}
+          {"Waiting in queue "}
+          <AiOutlineLoading3Quarters
+            className={classNames(styles.WaitingIcon)}
+          />
         </span>
       )}
       {!isQueuing && isMatched && (editing || !isOpponentReady) && (
