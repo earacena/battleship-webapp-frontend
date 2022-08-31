@@ -118,18 +118,19 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
 };
 
 function Battleship() {
-
   // BoardEditor states
   const boardSize: number = 10;
   const gridSize: number = 50;
 
   const [editing, setEditing] = useState<boolean>(true);
   const [board, setBoard] = useState(() => generateBoard(boardSize));
-  const [opponentBoard, setOpponentBoard] = useState(() => generateBoard(boardSize));
+  const [opponentBoard, setOpponentBoard] = useState(() =>
+    generateBoard(boardSize)
+  );
   const [occupiedPositions, setOccupiedPositions] = useState<boolean[][]>(() =>
     generateOccupiedPositions(boardSize)
   );
-  
+
   // Game states
   const [opponentOccupiedPositions] = useState<boolean[][]>(() =>
     generateRandomOccupiedPositions(boardSize)
@@ -144,24 +145,23 @@ function Battleship() {
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
-  
+
   // EndGame states
   const [winner, setWinner] = useState<string>("");
   const [gameEnded, setGameEnded] = useState<boolean>(false);
-  const [gameResult, setGameResult] = useState<string>('');
-
+  const [gameResult, setGameResult] = useState<string>("");
 
   useEffect(() => {
     if (playerScore === 17) {
       setWinner("player");
       setGameEnded(true);
-      setGameResult('win');
+      setGameResult("win");
     }
 
     if (opponentScore === 17) {
       setWinner("opponent");
       setGameEnded(true);
-      setGameResult('win');
+      setGameResult("win");
     }
   }, [playerScore, opponentScore]);
 
@@ -174,11 +174,11 @@ function Battleship() {
     setOccupiedPositions(generateOccupiedPositions(boardSize));
     setHitPositions(generateOccupiedPositions(boardSize));
     setOpponentHitPositions(generateOccupiedPositions(boardSize));
-    setWinner('');
+    setWinner("");
     setEditing(true);
     setGameEnded(false);
     setPlayerTurn(true);
-    setGameResult('');
+    setGameResult("");
   };
 
   const canFire = useCallback(
@@ -270,33 +270,46 @@ function Battleship() {
           <span style={{ textAlign: "center", fontSize: "40px" }}>
             <Scores playerScore={playerScore} opponentScore={opponentScore} />
           </span>
-          <div style={{ textAlign: "center" }}>
-            <Board size={boardSize} gridSize={gridSize}>
-              {board.map((row, y) =>
-                row.map((cell, x) => (
-                  <Cell
-                    key={cell.id}
-                    {...cell}
-                    occupied={occupiedPositions[y][x]}
-                    hit={hitPositions[y][x]}
-                  />
-                ))
-              )}
-            </Board>
-            <Board size={boardSize} gridSize={gridSize}>
-              {opponentBoard.map((row, y) =>
-                row.map((cell, x) => (
-                  <Cell
-                    key={cell.id}
-                    {...cell}
-                    hidden={true}
-                    occupied={opponentOccupiedPositions[y][x]}
-                    hit={opponentHitPositions[y][x]}
-                    playTurn={() => playTurn(y, x, true)}
-                  />
-                ))
-              )}
-            </Board>
+          <div
+            style={
+              {
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              } as React.CSSProperties
+            }
+          >
+            <span>
+              <Board size={boardSize} gridSize={gridSize}>
+                {board.map((row, y) =>
+                  row.map((cell, x) => (
+                    <Cell
+                      key={cell.id}
+                      {...cell}
+                      occupied={occupiedPositions[y][x]}
+                      hit={hitPositions[y][x]}
+                    />
+                  ))
+                )}
+              </Board>
+            </span>
+            <span>
+              <Board size={boardSize} gridSize={gridSize}>
+                {opponentBoard.map((row, y) =>
+                  row.map((cell, x) => (
+                    <Cell
+                      key={cell.id}
+                      {...cell}
+                      hidden={true}
+                      occupied={opponentOccupiedPositions[y][x]}
+                      hit={opponentHitPositions[y][x]}
+                      playTurn={() => playTurn(y, x, true)}
+                    />
+                  ))
+                )}
+              </Board>
+            </span>
           </div>
         </div>
       )}
