@@ -8,15 +8,10 @@ type EndGameProps = {
 };
 
 function EndGame({ winner, loser, gameResult, resetGame }: EndGameProps) {
-  const winningMessage: string = `${winner} has sunk all of ${loser}'s ships!`;
-  const drawMessage: string = "Both players at a draw!";
-
-  const message = gameResult === 'win' ? winningMessage : drawMessage;
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <span style={{ fontSize: '40px'}}>
-        {message}
+        <span style={{ color: 'green' }}>{winner}</span> has sunk all of <span style={{ color: 'red' }}>{loser}</span>'s ships!
       </span>
       <button style={{fontSize: '30px'}} onClick={resetGame}>Play Again</button>
     </div>
