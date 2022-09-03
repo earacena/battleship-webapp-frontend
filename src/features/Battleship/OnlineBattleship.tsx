@@ -73,7 +73,7 @@ function OnlineBattleship() {
   const ws = useRef<WebSocket>();
 
   useEffect(() => {
-    ws.current = new WebSocket(zString.parse(process.env['BACKEND_URL']));
+    ws.current = new WebSocket(zString.parse(process.env.REACT_APP_BACKEND_URL));
     ws.current.onopen = () => {
       console.log("connected to websocket server");
       setIsConnected(true);
