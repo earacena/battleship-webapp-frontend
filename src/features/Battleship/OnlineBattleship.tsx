@@ -387,7 +387,11 @@ function OnlineBattleship() {
                 <BsCheck2 style={{ color: "green" } as React.CSSProperties} />
               )}
               {!isConnected && (
-                <BsX style={{ color: "red" } as React.CSSProperties} />
+                <AiOutlineLoading3Quarters
+                  className={classNames(styles.WaitingIcon)}
+                  style={{ marginLeft: '6px', color: 'red' } as React.CSSProperties}
+                  size={20}
+                />
               )}
             </span>
           </Button>
