@@ -73,9 +73,11 @@ function OnlineBattleship() {
   const ws = useRef<WebSocket>();
 
   useEffect(() => {
-    ws.current = new WebSocket(zString.parse(process.env.REACT_APP_BACKEND_URL));
+    ws.current = new WebSocket(
+      zString.parse(process.env.REACT_APP_BACKEND_URL)
+    );
     ws.current.onopen = () => {
-      console.log("connected to websocket server");
+      // console.log("connected to websocket server");
       setIsConnected(true);
     };
     ws.current.onclose = () => {
@@ -95,7 +97,7 @@ function OnlineBattleship() {
     }
 
     ws.current.onmessage = (event) => {
-      // console.log(`message: ${event.data}`);
+      // // console.log(`message: ${event.data}`);
       const messageJSON: string = zString.parse(event.data);
       const message: any = JSON.parse(messageJSON);
 
@@ -107,7 +109,7 @@ function OnlineBattleship() {
             break;
           case "message":
             const parsedMessage: MessageType = Message.parse(message);
-            console.log(parsedMessage);
+            // console.log(parsedMessage);
             break;
           case "queued user":
             setIsQueuing(true);
@@ -218,7 +220,7 @@ function OnlineBattleship() {
 
   const resetGame = () => {
     // Set all the states back to default
-    console.log("opponent disconnected, reseting game");
+    // console.log("opponent disconnected, reseting game");
     setPlayerScore(0);
     setOpponentScore(0);
     setBoard(generateBoard(boardSize));
@@ -253,7 +255,7 @@ function OnlineBattleship() {
   );
 
   const playTurn = (y: number, x: number) => {
-    console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+    // console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
     if (canFire(y, x)) {
       ws.current?.send(
         JSON.stringify({
@@ -389,7 +391,9 @@ function OnlineBattleship() {
               {!isConnected && (
                 <AiOutlineLoading3Quarters
                   className={classNames(styles.WaitingIcon)}
-                  style={{ marginLeft: '6px', color: 'red' } as React.CSSProperties}
+                  style={
+                    { marginLeft: "6px", color: "red" } as React.CSSProperties
+                  }
                   size={20}
                 />
               )}

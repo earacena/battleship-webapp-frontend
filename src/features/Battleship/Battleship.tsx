@@ -51,7 +51,7 @@ const generateRandomValue = (min: number, max: number): number => {
 const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
   // Generate random, vertical or horizontal positions, for all 5 pieces
   let occupiedPositions = generateOccupiedPositions(boardSize);
-  console.log(occupiedPositions);
+  // console.log(occupiedPositions);
   const pieces = [5, 4, 3, 3, 2];
   let y: number;
   let x: number;
@@ -110,7 +110,7 @@ const generateRandomOccupiedPositions = (boardSize: number): boolean[][] => {
       }
 
       valid = true;
-      console.log(y, x);
+      // console.log(y, x);
     }
   }
 
@@ -204,7 +204,7 @@ function Battleship() {
       // Fire on given position on player's board
       let y: number = generateRandomValue(0, boardSize);
       let x: number = generateRandomValue(0, boardSize);
-      console.log(`randomly firing @ y: ${y} x: ${x}`);
+      // console.log(`randomly firing @ y: ${y} x: ${x}`);
       while (!canFire(y, x)) {
         y = generateRandomValue(0, boardSize);
         x = generateRandomValue(0, boardSize);
@@ -222,7 +222,7 @@ function Battleship() {
   }, [playerTurn, canFire, occupiedPositions]);
 
   const playTurn = (y: number, x: number, turn: boolean) => {
-    console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+    // console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
 
     if (playerTurn === turn) {
       // Allow player to fire

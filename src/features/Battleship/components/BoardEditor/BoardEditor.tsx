@@ -12,7 +12,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import Board from "../Board/Board";
-import { Button } from '../../../../components';
+import { Button } from "../../../../components";
 import { GrRotateLeft } from "react-icons/gr";
 import { BsCheck2 } from "react-icons/bs";
 
@@ -281,7 +281,7 @@ function BoardEditor({
       const piece = pieces.reduce<PieceProps | undefined>((acc, row) => {
         return acc ?? row.find((cell) => cell?.id === active.id);
       }, undefined);
-  
+
       if (piece) {
         setMovingPiece(piece);
       }
@@ -310,7 +310,7 @@ function BoardEditor({
         occupiedPositions
       )
     ) {
-      console.log("can move");
+      // // console.log("can move");
       // Move piece
       const newPiece: PieceProps = {
         ...movingPiece,
@@ -358,7 +358,14 @@ function BoardEditor({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <DndContext
         sensors={sensors}
         onDragStart={handleOnDragStart}
@@ -384,13 +391,21 @@ function BoardEditor({
                     );
                   }
                 }
-                return <Cell key={cell.id} {...cell} occupied={occupiedPositions[y][x]} />;
+                return (
+                  <Cell
+                    key={cell.id}
+                    {...cell}
+                    occupied={occupiedPositions[y][x]}
+                  />
+                );
               })
             )}
           </Board>
         </div>
       </DndContext>
-      <div style={{ display: 'flex', flexDirection: 'row' } as React.CSSProperties}>
+      <div
+        style={{ display: "flex", flexDirection: "row" } as React.CSSProperties}
+      >
         <Button onClick={handleRotate} disabled={!editing}>
           <GrRotateLeft />
           Rotate selected
