@@ -285,7 +285,7 @@ function OnlineBattleship() {
       )}
       {!isQueuing && isMatched && (editing || !isOpponentReady) && (
         <div>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } as React.CSSProperties}>
             <p>{`${opponentId} is your opponent!`}</p>
             {isOpponentReady ? (
               <span style={{ color: "green" } as React.CSSProperties}>
@@ -324,38 +324,47 @@ function OnlineBattleship() {
         </div>
       )}
       {!editing && isOpponentReady && isMatched && !gameEnded && (
-        <div>
-          <span style={{ textAlign: "center", fontSize: "40px" }}>
-            <Scores playerScore={playerScore} opponentScore={opponentScore} />
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'} as React.CSSProperties}>
+          <span style={{ display: 'flex', justifyContent: 'center', fontSize: "40px", }}>
+            {turn === playerTurn ? "Your turn" : <span style={{ color: 'gray' }}>{"Opponent's turn..."}</span>}
           </span>
-          {turn === playerTurn && "Your turn"}
-          <div style={{ textAlign: "center" }}>
-            <Board size={boardSize} gridSize={gridSize}>
-              {board.map((row, y) =>
-                row.map((cell, x) => (
-                  <Cell
-                    key={cell.id}
-                    {...cell}
-                    occupied={occupiedPositions[y][x]}
-                    hit={hitPositions[y][x]}
-                  />
-                ))
-              )}
-            </Board>
-            <Board size={boardSize} gridSize={gridSize}>
-              {opponentBoard.map((row, y) =>
-                row.map((cell, x) => (
-                  <Cell
-                    key={cell.id}
-                    {...cell}
-                    hidden={true}
-                    occupied={opponentOccupiedPositions[y][x]}
-                    hit={opponentHitPositions[y][x]}
-                    playTurn={() => playTurn(y, x)}
-                  />
-                ))
-              )}
-            </Board>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              {`Player: ${playerScore}`}
+              <div>
+                <Board size={boardSize} gridSize={gridSize}>
+                  {board.map((row, y) =>
+                    row.map((cell, x) => (
+                      <Cell
+                        key={cell.id}
+                        {...cell}
+                        occupied={occupiedPositions[y][x]}
+                        hit={hitPositions[y][x]}
+                      />
+                    ))
+                  )}
+                </Board>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              {`Opponent: ${opponentScore}`}
+              <div>
+                <Board size={boardSize} gridSize={gridSize}>
+                  {opponentBoard.map((row, y) =>
+                    row.map((cell, x) => (
+                      <Cell
+                        key={cell.id}
+                        {...cell}
+                        hidden={true}
+                        occupied={opponentOccupiedPositions[y][x]}
+                        hit={opponentHitPositions[y][x]}
+                        playTurn={() => playTurn(y, x)}
+                      />
+                    ))
+                  )}
+                </Board>
+              </div>
+            </div>
           </div>
         </div>
       )}
