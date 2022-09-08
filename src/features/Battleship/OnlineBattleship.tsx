@@ -285,7 +285,16 @@ function OnlineBattleship() {
       )}
       {!isQueuing && isMatched && (editing || !isOpponentReady) && (
         <div>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } as React.CSSProperties}>
+          <div
+            style={
+              {
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              } as React.CSSProperties
+            }
+          >
             <p>{`${opponentId} is your opponent!`}</p>
             {isOpponentReady ? (
               <span style={{ color: "green" } as React.CSSProperties}>
@@ -324,12 +333,31 @@ function OnlineBattleship() {
         </div>
       )}
       {!editing && isOpponentReady && isMatched && !gameEnded && (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center'} as React.CSSProperties}>
-          <span style={{ display: 'flex', justifyContent: 'center', fontSize: "40px", }}>
-            {turn === playerTurn ? "Your turn" : <span style={{ color: 'gray' }}>{"Opponent's turn..."}</span>}
-          </span>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        <div
+          style={
+            {
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            } as React.CSSProperties
+          }
+        >
+          {turn === playerTurn ? (
+            <span style={{ fontSize: "30px", color: "green" }}>Your turn</span>
+          ) : (
+            <span style={{ fontSize: "30px", color: "gray" }}>
+              Opponent's turn...
+            </span>
+          )}
+          <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               {`Player: ${playerScore}`}
               <div>
                 <Board size={boardSize} gridSize={gridSize}>
@@ -346,7 +374,13 @@ function OnlineBattleship() {
                 </Board>
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               {`Opponent: ${opponentScore}`}
               <div>
                 <Board size={boardSize} gridSize={gridSize}>
