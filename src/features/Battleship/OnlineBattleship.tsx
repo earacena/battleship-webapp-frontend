@@ -19,12 +19,12 @@ import type {
   PlayerFiredMessageType,
 } from "./types/OnlineBattleship.types";
 import { BoardEditor } from "./components/BoardEditor";
-import { Scores } from "./components/Scores";
 import { Board, Cell } from "./components";
 import { EndGame } from "./components/EndGame";
 import { Button } from "../../components";
 import styles from "./styles/onlineBattleship.module.css";
 import classNames from "classnames";
+import { Boards } from "./components/Boards";
 
 function OnlineBattleship() {
   // Queuing states
@@ -333,74 +333,21 @@ function OnlineBattleship() {
         </div>
       )}
       {!editing && isOpponentReady && isMatched && !gameEnded && (
-        <div
-          style={
-            {
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            } as React.CSSProperties
-          }
-        >
-          {turn === playerTurn ? (
-            <span style={{ fontSize: "30px", color: "green" }}>Your turn</span>
-          ) : (
-            <span style={{ fontSize: "30px", color: "gray" }}>
-              Opponent's turn...
-            </span>
-          )}
-          <div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              {`Player: ${playerScore}`}
-              <div>
-                <Board size={boardSize} gridSize={gridSize}>
-                  {board.map((row, y) =>
-                    row.map((cell, x) => (
-                      <Cell
-                        key={cell.id}
-                        {...cell}
-                        occupied={occupiedPositions[y][x]}
-                        hit={hitPositions[y][x]}
-                      />
-                    ))
-                  )}
-                </Board>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              {`Opponent: ${opponentScore}`}
-              <div>
-                <Board size={boardSize} gridSize={gridSize}>
-                  {opponentBoard.map((row, y) =>
-                    row.map((cell, x) => (
-                      <Cell
-                        key={cell.id}
-                        {...cell}
-                        hidden={true}
-                        occupied={opponentOccupiedPositions[y][x]}
-                        hit={opponentHitPositions[y][x]}
-                        playTurn={() => playTurn(y, x)}
-                      />
-                    ))
-                  )}
-                </Board>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Boards 
+          turn={turn}
+          playerTurn={playerTurn}
+          playerScore={playerScore}
+          boardSize={boardSize}
+          gridSize={gridSize}
+          board={board}
+          occupiedPositions={occupiedPositions}
+          hitPositions={hitPositions}
+          opponentScore={opponentScore}
+          opponentBoard={opponentBoard}
+          opponentOccupiedPositions={opponentOccupiedPositions}
+          opponentHitPositions={opponentHitPositions}
+          playTurn={playTurn}
+        />
       )}
       {gameEnded && (
         <EndGame
