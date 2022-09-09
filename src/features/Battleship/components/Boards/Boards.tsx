@@ -1,7 +1,9 @@
-import React, { useCallback } from "react";
+import classNames from "classnames";
+import React from "react";
 import { Board } from "../Board";
 import { Cell } from "../Cell";
 import { CellProps } from "../Cell";
+import styles from "./styles/Boards.module.css";
 
 type BoardsProps = {
   turn: string;
@@ -84,7 +86,7 @@ function Boards({
           }}
         >
           {`Opponent: ${opponentScore}`}
-          <div>
+          <div className={turn === playerTurn ? styles.BlinkingBackground : ''}>
             <Board size={boardSize} gridSize={gridSize}>
               {opponentBoard.map((row, y) =>
                 row.map((cell, x) => (
