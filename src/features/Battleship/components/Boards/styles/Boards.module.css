@@ -1,0 +1,10 @@
+.BlinkingBackground {
+  animation: blink 1.5s infinite linear;
+  background-color: transparent;
+}
+
+@keyframes blink {
+  50% {
+    background-color: gray;
+  }
+}
