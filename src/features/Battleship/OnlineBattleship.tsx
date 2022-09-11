@@ -25,6 +25,7 @@ import { Button } from "../../components";
 import styles from "./styles/onlineBattleship.module.css";
 import classNames from "classnames";
 import { Boards } from "./components/Boards";
+import toast, { Toaster } from "react-hot-toast";
 
 function OnlineBattleship() {
   // Queuing states
@@ -73,15 +74,34 @@ function OnlineBattleship() {
   const ws = useRef<WebSocket>();
 
   useEffect(() => {
+    toast.remove();
+    toast.loading('Connecting to server...', {
+      position: 'bottom-center',
+    });
+
     ws.current = new WebSocket(
       zString.parse(process.env.REACT_APP_BACKEND_URL)
     );
+
     ws.current.onopen = () => {
       // console.log("connected to websocket server");
+      toast.remove();
       setIsConnected(true);
+      toast.success('Connected to server', {
+        position: 'bottom-center',
+      });
     };
+
     ws.current.onclose = () => {
-      console.log("closed connection to websocket server");
+      // toast.error('Disconnected from server', {
+      //   position: 'bottom-center',
+      // });
+      // console.log("closed connection to websocket server");
+      setIsConnected(false);
+      toast.remove();
+      toast.loading('Connecting to server...', {
+        position: 'bottom-center',
+      });
     };
 
     const wsCurrent = ws.current;
@@ -203,6 +223,9 @@ function OnlineBattleship() {
             break;
           case "opponent disconnected":
             resetGame();
+            toast('Opponent has left match.', {
+              icon: '🚪',
+            });
             break;
         }
       } else {
@@ -270,6 +293,7 @@ function OnlineBattleship() {
 
   return (
     <div>
+      <Toaster />
       {!isQueuing && !isMatched && (
         <span style={{ fontSize: "40px" } as React.CSSProperties}>
           {"Not waiting in the queue."}
