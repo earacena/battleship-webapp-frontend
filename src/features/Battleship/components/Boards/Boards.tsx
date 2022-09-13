@@ -51,7 +51,7 @@ function Boards({
         <span style={{ fontSize: "30px", color: "green" }}>Your turn</span>
       ) : (
         <span style={{ fontSize: "30px", color: "gray" }}>
-          Opponent's turn...
+          Waiting for opponent..
         </span>
       )}
       <div>
