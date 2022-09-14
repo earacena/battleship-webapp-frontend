@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Cell, CellProps, Board } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 import { EndGame } from "./components/EndGame";
-import { Scores } from "./components/Scores";
+import appStyles from "../../app.module.css";
 
 export const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
@@ -245,7 +245,7 @@ function Battleship() {
   };
 
   return (
-    <div>
+    <div className={appStyles.FadeInComponentSlowly}>
       {editing && (
         <BoardEditor
           board={board}
@@ -266,7 +266,15 @@ function Battleship() {
         />
       )}
       {!editing && !gameEnded && (
-        <div style={{ display: 'flex', marginTop: '10px', flexDirection: "column", alignItems: 'center', justifyContent: 'center' }}>
+        <div
+          style={{
+            display: "flex",
+            marginTop: "10px",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <div
             style={
               {
@@ -277,7 +285,14 @@ function Battleship() {
               } as React.CSSProperties
             }
           >
-            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <span
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               {`Player: ${playerScore}`}
               <div>
                 <Board size={boardSize} gridSize={gridSize}>
@@ -294,7 +309,14 @@ function Battleship() {
                 </Board>
               </div>
             </span>
-            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <span
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               {`Opponent: ${opponentScore}`}
               <div>
                 <Board size={boardSize} gridSize={gridSize}>
