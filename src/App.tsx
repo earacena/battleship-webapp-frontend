@@ -5,12 +5,14 @@ import { Battleship, OnlineBattleship } from "./features/Battleship";
 import { Menu } from "./features/Menu";
 import { Button } from "./components";
 
+import styles from './app.module.css';
+
 function App() {
   const navigate = useNavigate();
 
   return (
     <div
-      className="App"
+      className={styles.FadeInComponentSlowly}
       style={
         {
           display: "flex",
