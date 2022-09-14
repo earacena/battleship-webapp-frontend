@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { BsCheck2, BsX } from "react-icons/bs";
+import { BsCheck2 } from "react-icons/bs";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { generateBoard, generateOccupiedPositions } from "./Battleship";
 import {
@@ -22,10 +22,11 @@ import { BoardEditor } from "./components/BoardEditor";
 import { Board, Cell } from "./components";
 import { EndGame } from "./components/EndGame";
 import { Button } from "../../components";
-import styles from "./styles/onlineBattleship.module.css";
 import classNames from "classnames";
 import { Boards } from "./components/Boards";
 import toast, { Toaster } from "react-hot-toast";
+import battleshipStyles from "./styles/battleship.module.css";
+import appStyles from "../../app.module.css";
 
 function OnlineBattleship() {
   // Queuing states
@@ -75,8 +76,8 @@ function OnlineBattleship() {
 
   useEffect(() => {
     toast.remove();
-    toast.loading('Connecting to server...', {
-      position: 'bottom-center',
+    toast.loading("Connecting to server...", {
+      position: "bottom-center",
     });
 
     ws.current = new WebSocket(
@@ -87,8 +88,8 @@ function OnlineBattleship() {
       // console.log("connected to websocket server");
       toast.remove();
       setIsConnected(true);
-      toast.success('Connected to server', {
-        position: 'bottom-center',
+      toast.success("Connected to server", {
+        position: "bottom-center",
       });
     };
 
@@ -99,8 +100,8 @@ function OnlineBattleship() {
       // console.log("closed connection to websocket server");
       setIsConnected(false);
       toast.remove();
-      toast.loading('Connecting to server...', {
-        position: 'bottom-center',
+      toast.loading("Connecting to server...", {
+        position: "bottom-center",
       });
     };
 
@@ -223,8 +224,8 @@ function OnlineBattleship() {
             break;
           case "opponent disconnected":
             resetGame();
-            toast('Opponent has left match.', {
-              icon: '🚪',
+            toast("Opponent has left match.", {
+              icon: "🚪",
             });
             break;
         }
@@ -292,7 +293,7 @@ function OnlineBattleship() {
   };
 
   return (
-    <div>
+    <div className={appStyles.FadeInComponentSlowly}>
       <Toaster />
       {!isQueuing && !isMatched && (
         <span style={{ fontSize: "40px" } as React.CSSProperties}>
@@ -303,7 +304,7 @@ function OnlineBattleship() {
         <span style={{ fontSize: "40px" } as React.CSSProperties}>
           {"Waiting in queue "}
           <AiOutlineLoading3Quarters
-            className={classNames(styles.WaitingIcon)}
+            className={classNames(battleshipStyles.WaitingIcon)}
           />
         </span>
       )}
@@ -357,7 +358,7 @@ function OnlineBattleship() {
         </div>
       )}
       {!editing && isOpponentReady && isMatched && !gameEnded && (
-        <Boards 
+        <Boards
           turn={turn}
           playerTurn={playerTurn}
           playerScore={playerScore}
@@ -404,7 +405,7 @@ function OnlineBattleship() {
               )}
               {!isConnected && (
                 <AiOutlineLoading3Quarters
-                  className={classNames(styles.WaitingIcon)}
+                  className={classNames(battleshipStyles.WaitingIcon)}
                   style={
                     { marginLeft: "6px", color: "red" } as React.CSSProperties
                   }
