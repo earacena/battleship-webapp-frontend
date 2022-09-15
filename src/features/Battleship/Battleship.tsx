@@ -195,7 +195,7 @@ function Battleship() {
       // Fire on given position on player's board
       let y: number = generateRandomValue(0, boardSize);
       let x: number = generateRandomValue(0, boardSize);
-      
+
       // console.log(`randomly firing @ y: ${y} x: ${x}`);
       while (!canFire(y, x)) {
         y = generateRandomValue(0, boardSize);
@@ -209,7 +209,7 @@ function Battleship() {
         return prevHitPositions;
       });
 
-      setTurn((prevTurn) => prevTurn === 'first' ? 'second' : 'first');
+      setTurn('first');
     }
   }, [turn, playerTurn, canFire, occupiedPositions]);
 
@@ -230,7 +230,7 @@ function Battleship() {
         return;
       }
 
-      setTurn((prevTurn) => prevTurn === 'first' ? 'second' : 'first');
+      setTurn('second');
     } else {
       return;
     }
