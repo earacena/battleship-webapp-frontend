@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import React from "react";
 import { Board } from "../Board";
 import { Cell } from "../Cell";
