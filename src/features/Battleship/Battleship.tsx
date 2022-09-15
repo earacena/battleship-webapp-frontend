@@ -132,6 +132,7 @@ function Battleship() {
   );
 
   // Game states
+  const [turn, setTurn] = useState<string>('first');
   const [opponentOccupiedPositions] = useState<boolean[][]>(() =>
     generateRandomOccupiedPositions(boardSize)
   );
@@ -144,7 +145,7 @@ function Battleship() {
   );
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
-  const [playerTurn, setPlayerTurn] = useState<boolean>(true);
+  const [playerTurn, setPlayerTurn] = useState<string>('first');
 
   // EndGame states
   const [winner, setWinner] = useState<string>("");
@@ -177,7 +178,7 @@ function Battleship() {
     setWinner("");
     setEditing(true);
     setGameEnded(false);
-    setPlayerTurn(true);
+    setTurn('first');
     setGameResult("");
   };
 
@@ -200,7 +201,7 @@ function Battleship() {
   );
 
   useEffect(() => {
-    if (!playerTurn) {
+    if (playerTurn !== turn) {
       // Fire on given position on player's board
       let y: number = generateRandomValue(0, boardSize);
       let x: number = generateRandomValue(0, boardSize);
@@ -217,12 +218,12 @@ function Battleship() {
         return prevHitPositions;
       });
 
-      setPlayerTurn(!playerTurn);
+      setTurn((prevTurn) => prevTurn === 'first' ? 'second' : 'first');
     }
-  }, [playerTurn, canFire, occupiedPositions]);
+  }, [turn, playerTurn, canFire, occupiedPositions]);
 
-  const playTurn = (y: number, x: number, turn: boolean) => {
-    // console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+  const playTurn = (y: number, x: number, turn: string) => {
+    console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
 
     if (playerTurn === turn) {
       // Allow player to fire
@@ -238,14 +239,16 @@ function Battleship() {
         return;
       }
 
-      setPlayerTurn(!playerTurn);
+      setTurn((prevTurn) => prevTurn === 'first' ? 'second' : 'first');
     } else {
       return;
     }
   };
 
   return (
-    <div className={appStyles.FadeInComponentSlowly}>
+    <div
+      className={appStyles.FadeInComponentSlowly}
+    >
       {editing && (
         <BoardEditor
           board={board}
@@ -267,75 +270,65 @@ function Battleship() {
       )}
       {!editing && !gameEnded && (
         <div
-          style={{
-            display: "flex",
-            marginTop: "10px",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          style={
+            {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            } as React.CSSProperties
+          }
         >
-          <div
-            style={
-              {
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              } as React.CSSProperties
-            }
+          <span
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <span
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {`Player: ${playerScore}`}
-              <div>
-                <Board size={boardSize} gridSize={gridSize}>
-                  {board.map((row, y) =>
-                    row.map((cell, x) => (
-                      <Cell
-                        key={cell.id}
-                        {...cell}
-                        occupied={occupiedPositions[y][x]}
-                        hit={hitPositions[y][x]}
-                      />
-                    ))
-                  )}
-                </Board>
-              </div>
-            </span>
-            <span
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {`Opponent: ${opponentScore}`}
-              <div>
-                <Board size={boardSize} gridSize={gridSize}>
-                  {opponentBoard.map((row, y) =>
-                    row.map((cell, x) => (
-                      <Cell
-                        key={cell.id}
-                        {...cell}
-                        hidden={true}
-                        occupied={opponentOccupiedPositions[y][x]}
-                        hit={opponentHitPositions[y][x]}
-                        playTurn={() => playTurn(y, x, true)}
-                      />
-                    ))
-                  )}
-                </Board>
-              </div>
-            </span>
-          </div>
+            {`Player: ${playerScore}`}
+            <div>
+              <Board size={boardSize} gridSize={gridSize}>
+                {board.map((row, y) =>
+                  row.map((cell, x) => (
+                    <Cell
+                      key={cell.id}
+                      {...cell}
+                      occupied={occupiedPositions[y][x]}
+                      hit={hitPositions[y][x]}
+                    />
+                  ))
+                )}
+              </Board>
+            </div>
+          </span>
+          <span
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {`Opponent: ${opponentScore}`}
+            <div>
+              <Board size={boardSize} gridSize={gridSize}>
+                {opponentBoard.map((row, y) =>
+                  row.map((cell, x) => (
+                    <Cell
+                      key={cell.id}
+                      {...cell}
+                      hidden={true}
+                      occupied={opponentOccupiedPositions[y][x]}
+                      hit={opponentHitPositions[y][x]}
+                      playTurn={() => playTurn(y, x, turn)}
+                    />
+                  ))
+                )}
+              </Board>
+            </div>
+          </span>
         </div>
       )}
     </div>
