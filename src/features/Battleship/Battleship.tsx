@@ -146,26 +146,17 @@ function Battleship() {
   );
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
-  const [playerTurn, setPlayerTurn] = useState<string>('first');
+  const [playerTurn] = useState<string>('first');
 
   // EndGame states
-  const [winner, setWinner] = useState<string>("");
-  const [gameEnded, setGameEnded] = useState<boolean>(false);
-  const [gameResult, setGameResult] = useState<string>("");
+  const winner: string | undefined = (playerScore === 17 || opponentScore === 17) 
+    ? (
+      playerScore === 17
+        ? "player"
+        : "opponent"
+    ) : undefined;
 
-  useEffect(() => {
-    if (playerScore === 17) {
-      setWinner("player");
-      setGameEnded(true);
-      setGameResult("win");
-    }
-
-    if (opponentScore === 17) {
-      setWinner("opponent");
-      setGameEnded(true);
-      setGameResult("win");
-    }
-  }, [playerScore, opponentScore]);
+  const gameEnded: boolean = winner !== undefined;
 
   const resetGame = () => {
     // Set all the states back to default
@@ -176,16 +167,14 @@ function Battleship() {
     setOccupiedPositions(generateOccupiedPositions(boardSize));
     setHitPositions(generateOccupiedPositions(boardSize));
     setOpponentHitPositions(generateOccupiedPositions(boardSize));
-    setWinner("");
     setEditing(true);
-    setGameEnded(false);
     setTurn('first');
-    setGameResult("");
   };
 
   const canFire = useCallback(
     (y: number, x: number) => {
-      if (playerTurn) {
+      if (playerTurn === turn) {
+        // Check opponent's (bot) board for valid target
         if (opponentHitPositions[y][x]) {
           return false;
         }
@@ -198,7 +187,7 @@ function Battleship() {
 
       return true;
     },
-    [hitPositions, opponentHitPositions, playerTurn]
+    [hitPositions, opponentHitPositions, playerTurn, turn]
   );
 
   useEffect(() => {
@@ -206,6 +195,7 @@ function Battleship() {
       // Fire on given position on player's board
       let y: number = generateRandomValue(0, boardSize);
       let x: number = generateRandomValue(0, boardSize);
+      
       // console.log(`randomly firing @ y: ${y} x: ${x}`);
       while (!canFire(y, x)) {
         y = generateRandomValue(0, boardSize);
@@ -261,11 +251,10 @@ function Battleship() {
           editing={editing}
         />
       )}
-      {gameEnded && (
+      {winner && (
         <EndGame
           winner={winner}
           loser={winner === "player" ? "bot" : "player"}
-          gameResult={gameResult}
           resetGame={resetGame}
         />
       )}
