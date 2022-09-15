@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Cell, CellProps, Board } from "./components";
+import { CellProps } from "./components";
 import { BoardEditor } from "./components/BoardEditor";
 import { EndGame } from "./components/EndGame";
 import appStyles from "../../app.module.css";
+import { Boards } from "./components/Boards";
 
 export const generateBoard = (boardSize: number): CellProps[][] => {
   // Create multidimensional array
@@ -222,7 +223,7 @@ function Battleship() {
     }
   }, [turn, playerTurn, canFire, occupiedPositions]);
 
-  const playTurn = (y: number, x: number, turn: string) => {
+  const playTurn = (y: number, x: number) => {
     console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
 
     if (playerTurn === turn) {
@@ -269,67 +270,21 @@ function Battleship() {
         />
       )}
       {!editing && !gameEnded && (
-        <div
-          style={
-            {
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            } as React.CSSProperties
-          }
-        >
-          <span
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {`Player: ${playerScore}`}
-            <div>
-              <Board size={boardSize} gridSize={gridSize}>
-                {board.map((row, y) =>
-                  row.map((cell, x) => (
-                    <Cell
-                      key={cell.id}
-                      {...cell}
-                      occupied={occupiedPositions[y][x]}
-                      hit={hitPositions[y][x]}
-                    />
-                  ))
-                )}
-              </Board>
-            </div>
-          </span>
-          <span
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {`Opponent: ${opponentScore}`}
-            <div>
-              <Board size={boardSize} gridSize={gridSize}>
-                {opponentBoard.map((row, y) =>
-                  row.map((cell, x) => (
-                    <Cell
-                      key={cell.id}
-                      {...cell}
-                      hidden={true}
-                      occupied={opponentOccupiedPositions[y][x]}
-                      hit={opponentHitPositions[y][x]}
-                      playTurn={() => playTurn(y, x, turn)}
-                    />
-                  ))
-                )}
-              </Board>
-            </div>
-          </span>
-        </div>
+        <Boards
+          turn={turn}
+          playerTurn={playerTurn}
+          playerScore={playerScore}
+          boardSize={boardSize}
+          gridSize={gridSize}
+          board={board}
+          occupiedPositions={occupiedPositions}
+          hitPositions={hitPositions}
+          opponentScore={opponentScore}
+          opponentBoard={opponentBoard}
+          opponentOccupiedPositions={opponentOccupiedPositions}
+          opponentHitPositions={opponentHitPositions}
+          playTurn={playTurn}
+        />
       )}
     </div>
   );
