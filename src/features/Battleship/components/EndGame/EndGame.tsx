@@ -4,11 +4,10 @@ import styles from '../../../../app.module.css';
 type EndGameProps = {
   winner: string;
   loser: string;
-  gameResult: string;
   resetGame: () => void;
 };
 
-function EndGame({ winner, loser, gameResult, resetGame }: EndGameProps) {
+function EndGame({ winner, loser, resetGame }: EndGameProps) {
   return (
     <div
       className={styles.FadeInComponentSlowly}
