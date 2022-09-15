@@ -53,7 +53,7 @@ function Boards({
           Waiting for opponent..
         </span>
       )}
-      <div>
+      <div className={styles.Boards}>
         <div
           style={{
             display: "flex",
