@@ -69,7 +69,6 @@ function OnlineBattleship() {
   const [winner, setWinner] = useState<string>("");
   const [loser, setLoser] = useState<string>("");
   const [gameEnded, setGameEnded] = useState<boolean>(false);
-  const [gameResult, setGameResult] = useState<string>("");
 
   // Websockets
   const ws = useRef<WebSocket>();
@@ -217,7 +216,6 @@ function OnlineBattleship() {
               const parsedAnnounceWinnerMessage =
                 AnnounceWinnerMessage.parse(message);
               setGameEnded(true);
-              setGameResult("win");
               setWinner(parsedAnnounceWinnerMessage.winner);
               setLoser(parsedAnnounceWinnerMessage.loser);
             }
@@ -256,7 +254,6 @@ function OnlineBattleship() {
     setEditing(true);
     setGameEnded(false);
     setPlayerTurn("first");
-    setGameResult("");
     setIsQueuing(false);
     setIsMatched(false);
     setOpponentId("");
@@ -378,7 +375,6 @@ function OnlineBattleship() {
         <EndGame
           winner={winner}
           loser={loser}
-          gameResult={gameResult}
           resetGame={resetGame}
         />
       )}
