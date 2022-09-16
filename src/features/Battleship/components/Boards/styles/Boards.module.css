@@ -1,6 +1,7 @@
 .BlinkingBackground {
   animation: blink 1.5s infinite linear;
   background-color: transparent;
+  border-radius: 10px;
 }
 
 @keyframes blink {
