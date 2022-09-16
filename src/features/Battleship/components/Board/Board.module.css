@@ -3,4 +3,6 @@
   grid-template-columns: repeat(var(--board-size), max-content);
   z-index: -1;
   margin: 10px;
+  border: 10px solid black;
+  border-radius: 10px;
 };
