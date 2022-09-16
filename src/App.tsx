@@ -1,8 +1,7 @@
 import React, { createContext, Dispatch, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Battleship, OnlineBattleship } from "./features/Battleship";
 import { Menu } from "./features/Menu";
-import { Button } from "./components";
 import { Header } from "./components";
 
 import styles from './app.module.css';
