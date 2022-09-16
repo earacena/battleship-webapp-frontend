@@ -1,3 +1,7 @@
+.App {
+  background-color: var(--background-color);
+}
+
 .FadeInComponentSlowly {
   animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) ;
 }
