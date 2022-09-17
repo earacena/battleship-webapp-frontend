@@ -1,0 +1,18 @@
+.darkButton {
+  background-color: #212D40;
+  color: white;
+}
+
+.darkButton:hover {
+  background-color: #364156;
+}
+
+.lightButton {
+  background-color: white;
+  color: #212D40;
+}
+
+.lightButton:hover {
+  background-color: #364156;
+  color: white;
+}
