@@ -3,6 +3,13 @@
   grid-template-columns: repeat(var(--board-size), max-content);
   z-index: -1;
   margin: 10px;
-  border: 10px solid black;
   border-radius: 10px;
-};
+}
+
+.DarkMode {
+  border: 10px solid rgb(20, 33, 53);
+}
+
+.LightMode {
+  border: 10px solid #293241; 
+}
