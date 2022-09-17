@@ -1,9 +1,31 @@
+:root {
+  --light-bg-color: white;
+  --dark-bg-color: #293241;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .App {
-  background-color: var(--background-color);
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+  overflow:hidden;
+}
+
+.LightMode {
+  background-color: var(--light-bg-color);
+}
+
+.DarkMode {
+  background-color: var(--dark-bg-color);
 }
 
 .FadeInComponentSlowly {
-  animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) ;
+  animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .FadeInComponentQuickly {

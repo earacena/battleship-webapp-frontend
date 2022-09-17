@@ -19,11 +19,11 @@ function App() {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      <Header />
       <div
         className={classNames(
           styles.App,
-          styles.FadeInComponentSlowly
+          styles.FadeInComponentSlowly,
+          theme === 'light' ? styles.LightMode : styles.DarkMode,
         )}
         style={
           {
@@ -31,10 +31,10 @@ function App() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            "--background-color": theme === 'light' ? 'white' : 'darkslategray',
           } as React.CSSProperties
         }
       >
+        <Header />
         <Routes>
           <Route path="/" element={<Menu />} />
           <Route path="solo" element={<Battleship />} />
