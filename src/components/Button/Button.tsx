@@ -12,7 +12,7 @@ type ButtonProps = {
 
 function Button({ onClick, disabled, children, style }: ButtonProps) {
 
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const defaultStyle: React.CSSProperties = {
     display: "flex",
