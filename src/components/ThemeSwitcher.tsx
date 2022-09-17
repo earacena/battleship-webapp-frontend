@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { BsSun, BsMoonFill } from 'react-icons/bs';
 import { ThemeContext } from '../App';
-import Button from './Button';
+import { Button } from './Button';
 
 function ThemeSwitcher() {
   const { theme, setTheme } = useContext(ThemeContext);
