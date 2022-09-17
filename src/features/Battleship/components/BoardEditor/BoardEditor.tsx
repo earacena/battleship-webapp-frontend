@@ -216,7 +216,7 @@ function BoardEditor({
 
   useEffect(() => {
     setPieces(generatePieces(boardSize, gridSize, setOccupiedPositions));
-  }, []);
+  }, [boardSize, gridSize, setOccupiedPositions]);
 
   const handleRotate = () => {
     if (selected && canRotate(selected, occupiedPositions) && pieces) {
