@@ -1,8 +1,10 @@
 import { useDroppable } from '@dnd-kit/core';
-import React from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
 import styles from './Cell.module.css';
 import { ImCross } from 'react-icons/im';
+
+import { ThemeContext } from '../../../../App';
 
 export type CellProps = {
   id: string;
@@ -19,44 +21,42 @@ export type CellProps = {
 function Cell({ id, x, y, hit, occupied, playTurn, hidden, selected, children }: CellProps) {
   const { setNodeRef } = useDroppable({ id });
 
-  let selectedColor: string;
-  let occupiedColor: string;
-  if (selected) {
-    selectedColor = '#DC3220';
-  } else {
-    if (occupied) {
-      selectedColor = '#005AB5';
-    } else {
-      selectedColor = 'white';
-    }
-  }
+  const { theme } = useContext(ThemeContext);
 
-  if (occupied) {
+  let styleClass;
+
+  if (theme === 'light') {
     if (hidden) {
-      selectedColor = 'white';
-      occupiedColor = 'white';
-    } else {
-      occupiedColor = '#005AB5';
+      styleClass = styles.LightMode;
+    } else if (selected && occupied) {
+      styleClass = styles.LightSelected;
+    } else if (occupied) {
+      styleClass = styles.LightOccupied;
     }
   } else {
-    occupiedColor = 'white';
+    if (hidden) {
+      styleClass = styles.DarkMode;
+    } else if (selected && occupied) {
+      styleClass = styles.DarkSelected;
+    } else if (occupied) {
+      styleClass = styles.DarkOccupied;
+    } else {
+      styleClass = styles.DarkMode;
+    }
   }
 
   return (
     <div
       ref={setNodeRef}
       className={classNames(
-        styles.Cell
+        styles.Cell,
+        styleClass
       )}
-      style={{
-        '--occupied': occupiedColor,
-        '--selected': selectedColor,
-      } as React.CSSProperties}
       onClick={playTurn}
     >
       {children}
-      {occupied && hit && <ImCross style={{ color: 'red'}} />}
-      {!occupied && hit && <ImCross style={{ color: 'black'}} />}
+      {occupied && hit && <ImCross style={{ color: '#AF0404'}} />}
+      {!occupied && hit && <ImCross style={{ color: '#293241'}} />}
     </div>
   )
 };

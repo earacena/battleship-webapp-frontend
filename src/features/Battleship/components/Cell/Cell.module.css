@@ -3,7 +3,6 @@
   --min-size: 30px;
   --max_size: calc(8vh);
 
-  border: 2px lightslategray dotted;
   min-width: var(--min-size);
   max-width: var(--max_size);
   min-height: var(--min-size);
@@ -16,7 +15,30 @@
   align-items: center;
   justify-content: center;
 
+  border: 2px lightslategray dotted;
+  background-image: linear-gradient(135deg, var(--selected), var(--occupied));  
+}
 
-  background-image: linear-gradient(135deg, var(--selected), var(--occupied));
-  
+.LightMode {
+  background-color: white;
+}
+
+.LightSelected {
+  background-color: goldenrod;
+}
+
+.LightOccupied {
+  background-color: #98C1D9;
+}
+
+.DarkMode {
+  background-color: #BDD5EA;
+}
+
+.DarkSelected {
+  background-color: goldenrod;
+}
+
+.DarkOccupied {
+  background-color: #577399;
 }
