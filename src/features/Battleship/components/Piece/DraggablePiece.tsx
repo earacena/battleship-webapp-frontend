@@ -13,6 +13,7 @@ function DraggablePiece(props: PieceProps) {
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     flexDirection: props.vertical ? 'column' : 'row',
+    cursor: 'move',
   }
 
   return (
