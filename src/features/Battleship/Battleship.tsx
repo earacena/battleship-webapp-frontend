@@ -214,7 +214,7 @@ function Battleship() {
   }, [turn, playerTurn, canFire, occupiedPositions]);
 
   const playTurn = (y: number, x: number) => {
-    console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+    // console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
 
     if (playerTurn === turn) {
       // Allow player to fire
