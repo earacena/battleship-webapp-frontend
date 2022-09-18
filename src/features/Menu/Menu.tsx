@@ -11,14 +11,18 @@ function Menu() {
   return (
     <div 
       className={styles.FadeInComponentQuickly}
-      style={{ display: 'flex', flexDirection: 'row' } as React.CSSProperties}
+      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' } as React.CSSProperties}
     >
-      <Button onClick={() => navigate("/solo")}>
-         Solo
-        <BsPerson />
+      <Button style={{ fontSize: '50px', padding: '10px' } as React.CSSProperties} onClick={() => navigate("/solo")}>
+          Solo
+          <span>
+            <BsPerson />
+          </span>
       </Button>
-      <Button onClick={() => navigate("/online")}>
-        Online
+      <Button style={{ fontSize: '49px', padding: '10px' } as React.CSSProperties} onClick={() => navigate("/online")}>
+        <span>
+          Online
+        </span>
         <span>
           <BsPerson />
           <BsPerson />

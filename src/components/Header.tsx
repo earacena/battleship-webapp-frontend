@@ -13,7 +13,7 @@ function Header() {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
       } as React.CSSProperties}
     >
       <Button

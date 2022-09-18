@@ -36,11 +36,13 @@ function App() {
         }
       >
         <Header />
-        <Routes>
-          <Route path="/" element={<Menu />} />
-          <Route path="solo" element={<Battleship />} />
-          <Route path="online" element={<OnlineBattleship />} />
-        </Routes>
+        <span style={{ display: 'flex', flexGrow: 1 } as React.CSSProperties}>
+          <Routes>
+            <Route path="/" element={<Menu />} />
+            <Route path="solo" element={<Battleship />} />
+            <Route path="online" element={<OnlineBattleship />} />
+          </Routes>
+        </span>
       </div>
     </ThemeContext.Provider>
   );
