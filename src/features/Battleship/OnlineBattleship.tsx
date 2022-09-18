@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState, useCallback, useContext } from "react";
 import { BsCheck2 } from "react-icons/bs";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { generateBoard, generateOccupiedPositions } from "./Battleship";
@@ -27,8 +27,11 @@ import { Boards } from "./components/Boards";
 import toast, { Toaster } from "react-hot-toast";
 import battleshipStyles from "./styles/battleship.module.css";
 import appStyles from "../../app.module.css";
+import { ThemeContext } from "../../App";
 
 function OnlineBattleship() {
+  const { theme } = useContext(ThemeContext);
+
   // Queuing states
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isQueuing, setIsQueuing] = useState<boolean>(false);
@@ -293,7 +296,10 @@ function OnlineBattleship() {
     <div className={appStyles.FadeInComponentSlowly}>
       <Toaster />
       {!isQueuing && !isMatched && (
-        <span style={{ fontSize: "40px" } as React.CSSProperties}>
+        <span style={{ 
+          fontSize: "40px",
+          color: theme === 'light' ? '#293241' :  'white',
+        } as React.CSSProperties}>
           {"Not waiting in the queue."}
         </span>
       )}
@@ -317,14 +323,21 @@ function OnlineBattleship() {
               } as React.CSSProperties
             }
           >
-            <p>{`${opponentId} is your opponent!`}</p>
             {isOpponentReady ? (
-              <span style={{ color: "green" } as React.CSSProperties}>
+              <span style={{
+                fontWeight: '500',
+                fontSize: "30px",
+                color: theme === 'light' ? '#42855B' : "#A7D129",
+              } as React.CSSProperties}>
                 {"Opponent is Ready"}
               </span>
             ) : (
-              <span style={{ color: "gray" } as React.CSSProperties}>
-                {!editing && "Opponent is currently editing their board..."}
+              <span style={{
+                fontWeight: '300',
+                fontSize: "30px",
+                color: theme === 'light' ? "gray" : "white",
+              } as React.CSSProperties}>
+                {!editing && "Waiting for opponent..."}
               </span>
             )}
           </div>
