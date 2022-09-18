@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ThemeContext } from "../../../../App";
 import { Board } from "../Board";
 import { Cell } from "../Cell";
 import { CellProps } from "../Cell";
@@ -35,6 +36,8 @@ function Boards({
   opponentHitPositions,
   playTurn,
 }: BoardsProps) {
+  const { theme } = useContext(ThemeContext);
+
   return (
     <div
       style={
@@ -47,10 +50,20 @@ function Boards({
       }
     >
       {turn === playerTurn ? (
-        <span style={{ fontSize: "30px", color: "green" }}>Your turn</span>
+        <span style={{ 
+          fontWeight: '500',
+          fontSize: "30px",
+          color: theme === 'light' ? '#42855B' : "#A7D129",
+        }}>
+          Your turn
+        </span>
       ) : (
-        <span style={{ fontSize: "30px", color: "gray" }}>
-          Waiting for opponent..
+        <span style={{
+          fontWeight: '300',
+          fontSize: "30px",
+          color: theme === 'light' ? "gray" : "white",
+        }}>
+          Waiting for opponent...
         </span>
       )}
       <div className={styles.Boards}>
@@ -61,7 +74,13 @@ function Boards({
             alignItems: "center",
           }}
         >
-          {`Player: ${playerScore}`}
+          <span style={{ 
+            fontWeight: 900,
+            color: theme === 'light' ? '#293241' : 'white',
+            fontSize: '20px'
+          } as React.CSSProperties}>
+            {`Player: ${playerScore}`}
+          </span>
           <div>
             <Board size={boardSize} gridSize={gridSize}>
               {board.map((row, y) =>
@@ -84,7 +103,13 @@ function Boards({
             alignItems: "center",
           }}
         >
-          {`Opponent: ${opponentScore}`}
+          <span style={{
+            fontWeight: 900,
+            color: theme === 'light' ? '#293241' : 'white',
+            fontSize: '20px',
+          } as React.CSSProperties}>
+            {`Opponent: ${opponentScore}`}
+          </span>
           <div className={turn === playerTurn ? styles.BlinkingBackground : ''}>
             <Board size={boardSize} gridSize={gridSize}>
               {opponentBoard.map((row, y) =>
