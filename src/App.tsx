@@ -31,6 +31,7 @@ function App() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            minHeight: '100vh'
           } as React.CSSProperties
         }
       >
