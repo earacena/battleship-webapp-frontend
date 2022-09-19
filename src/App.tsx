@@ -6,6 +6,7 @@ import { Header } from "./components";
 
 import styles from './app.module.css';
 import classNames from "classnames";
+import Footer from "./components/Footer";
 
 type ThemeContextProps = {
   theme: string;
@@ -43,6 +44,7 @@ function App() {
             <Route path="online" element={<OnlineBattleship />} />
           </Routes>
         </span>
+        <Footer />
       </div>
     </ThemeContext.Provider>
   );
