@@ -1,9 +1,14 @@
-# battleship-webapp-frontend
+# Battleship Game - Frontend
 
 ## Description
-The frontend of a Battleship game web application written in Typescript.
+The frontend of a Battleship game web application written in Typescript. Deployed live [here](https://battleship-game.onrender.com)
 
 The backend of this project is found [here](https://github.com/earacena/battleship-webapp-backend).
+
+### Features
+  * Playing against a bot
+  * Queuing online against other players
+  * Light/Dark mode
 
 ### Technologies
   * Typescript
