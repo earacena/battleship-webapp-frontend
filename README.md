@@ -6,6 +6,7 @@ The frontend of a Battleship game web application written in Typescript. Deploye
 The backend of this project is found [here](https://github.com/earacena/battleship-webapp-backend).
 
 ### Features
+  * Drag and drop pieces to setup board
   * Playing against a bot
   * Queuing online against other players
   * Light/Dark mode
