@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, useState } from "react";
+import React, { createContext, Dispatch, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Battleship, OnlineBattleship } from "./features/Battleship";
 import { Menu } from "./features/Menu";
@@ -17,6 +17,10 @@ export const ThemeContext = createContext<ThemeContextProps>({ theme: '', setThe
 
 function App() {
   const [theme, setTheme] = useState<string>('light');
+
+  useEffect(() => {
+    document.title = 'Battleship';
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
