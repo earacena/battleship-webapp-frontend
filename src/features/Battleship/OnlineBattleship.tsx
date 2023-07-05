@@ -28,6 +28,7 @@ import toast, { Toaster } from "react-hot-toast";
 import battleshipStyles from "./styles/battleship.module.css";
 import appStyles from "../../app.module.css";
 import { ThemeContext } from "../../App";
+import logger from "../../util/Logger";
 
 function OnlineBattleship() {
   const { theme } = useContext(ThemeContext);
@@ -87,7 +88,7 @@ function OnlineBattleship() {
     );
 
     ws.current.onopen = () => {
-      // console.log("connected to websocket server");
+      logger.log("connected to websocket server");
       toast.remove();
       setIsConnected(true);
       toast.success("Connected to server", {
@@ -128,11 +129,11 @@ function OnlineBattleship() {
         switch (message.type) {
           case "id":
             const parsedIdMessage: IdMessageType = IdMessage.parse(message);
-            // console.log(`id: ${parsedIdMessage.id}`);
+            logger.log(`id: ${parsedIdMessage.id}`);
             break;
           case "message":
             const parsedMessage: MessageType = Message.parse(message);
-            // console.log(parsedMessage);
+            logger.log(`${parsedMessage}`);
             break;
           case "queued user":
             setIsQueuing(true);
@@ -231,7 +232,7 @@ function OnlineBattleship() {
             break;
         }
       } else {
-        console.error(`malformatted websocket message received: ${message}`);
+        logger.logErrorMsg(`malformatted websocket message received: ${message}`);
       }
     };
   }, []);
@@ -279,7 +280,7 @@ function OnlineBattleship() {
   );
 
   const playTurn = (y: number, x: number) => {
-    // console.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
+    logger.log(`${playerTurn} firing at y: ${y}, x: ${x}`);
     if (canFire(y, x)) {
       ws.current?.send(
         JSON.stringify({
