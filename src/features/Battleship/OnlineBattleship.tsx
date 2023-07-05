@@ -128,7 +128,7 @@ function OnlineBattleship() {
         switch (message.type) {
           case "id":
             const parsedIdMessage: IdMessageType = IdMessage.parse(message);
-            console.log(`id: ${parsedIdMessage.id}`);
+            // console.log(`id: ${parsedIdMessage.id}`);
             break;
           case "message":
             const parsedMessage: MessageType = Message.parse(message);
