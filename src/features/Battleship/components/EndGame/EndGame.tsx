@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { ThemeContext } from "../../../../App";
 import styles from '../../../../app.module.css';
 
 type EndGameProps = {
@@ -8,6 +9,9 @@ type EndGameProps = {
 };
 
 function EndGame({ winner, loser, resetGame }: EndGameProps) {
+  
+  const { theme } = useContext(ThemeContext);
+
   return (
     <div
       className={styles.FadeInComponentSlowly}
@@ -18,7 +22,10 @@ function EndGame({ winner, loser, resetGame }: EndGameProps) {
         alignItems: "center",
       }}
     >
-      <span style={{ fontSize: "40px" }}>
+      <span style={{
+        fontSize: "40px",
+        color: theme === 'light' ? '#212D40' : 'white',
+      }}>
         <span style={{ color: "green" }}>{winner}</span> has sunk all of{" "}
         <span style={{ color: "red" }}>{loser}</span>'s ships!
       </span>
