@@ -100,7 +100,7 @@ function OnlineBattleship() {
       // toast.error('Disconnected from server', {
       //   position: 'bottom-center',
       // });
-      // console.log("closed connection to websocket server");
+      logger.log("closed connection to websocket server");
       setIsConnected(false);
       toast.remove();
       toast.loading("Connecting to server...", {
@@ -121,7 +121,7 @@ function OnlineBattleship() {
     }
 
     ws.current.onmessage = (event) => {
-      // // console.log(`message: ${event.data}`);
+      logger.log(`message: ${event.data}`);
       const messageJSON: string = zString.parse(event.data);
       const message: any = JSON.parse(messageJSON);
 
@@ -297,9 +297,9 @@ function OnlineBattleship() {
     <div className={appStyles.FadeInComponentSlowly}>
       <Toaster />
       {!isQueuing && !isMatched && (
-        <span style={{ 
+        <span style={{
           fontSize: "40px",
-          color: theme === 'light' ? '#293241' :  'white',
+          color: theme === 'light' ? '#293241' : 'white',
         } as React.CSSProperties}>
           {"Not waiting in the queue."}
         </span>
